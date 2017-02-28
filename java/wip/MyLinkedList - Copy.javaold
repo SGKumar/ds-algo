@@ -1,0 +1,506 @@
+
+public class LinkedList
+{
+    // Friendly data; accessible by other package routines
+	private LinkedListNode first;
+	private int len;
+
+	LinkedList()
+   // Constructors
+	{
+        first = null;
+    }
+
+	public LinkedListNode getList() { return first; }
+	public int length() { return len; }
+
+	public LinkedListNode add(char value)
+	{
+		return add(new LinkedListNode(value));
+	}
+
+	public LinkedListNode add(LinkedListNode node)
+	{
+		if(first == null)
+		{
+			first = node;
+			return first;
+		}
+		LinkedListNode iter = first;
+		while(iter.Next() != null)
+		{
+			iter = iter.Next();
+		}
+
+		iter.Next(node);
+		len++;
+		return node;
+	}
+
+	public LinkedListNode hasLoop(boolean findNode)
+	{
+		LinkedListNode slow = first, fast = first;
+		System.out.println("SLOW\tFAST");
+		while(fast != null && fast.Next() != null)
+		{
+			System.out.println(slow.Element() + "\t\t" + fast.Element());
+			slow = slow.Next();
+			fast = fast.Next().Next();
+			if(fast == slow)
+				break;
+		}
+
+		if((fast == slow) && findNode)
+		{
+			System.out.println("----------");
+			slow = first;
+			while(fast != slow)
+			{
+				System.out.println(slow.Element() + "\t" + fast.Element());
+				fast = fast.Next();
+				slow = slow.Next();
+			}
+		}
+		return fast;
+	}
+
+	// Will only work if there is a merge
+	// Will fail for independent lists
+	public LinkedListNode findMergeNode(LinkedListNode first1, LinkedListNode first2)
+	{
+		LinkedListNode slow = first1, fast = first1;
+
+		System.out.println("SLOW          FAST");
+		System.out.println("------------------");
+
+		while(fast != slow)
+		{
+			if(slow.Next() != null)
+				slow = slow.Next();
+			else
+				slow = first2;
+
+			if(fast.Next() != null)
+				fast = fast.Next();
+			else
+				fast = first2;
+			if(fast.Next() != null)
+				fast = fast.Next();
+			else
+				fast = first2;
+
+			System.out.println("  " + slow.Element() + "         " + fast.Element());
+		}
+
+		System.out.println("------------------");
+		slow = first1;
+		while(fast != slow)
+		{
+			System.out.println("  " + slow.Element() + "     " + fast.Element());
+			if(slow.Next() != null)
+				slow = slow.Next();
+			else
+				slow = first2;
+
+			if(fast.Next() != null)
+				fast = fast.Next();
+			else
+				fast = first2;
+		}
+		return slow;
+	}
+
+	public LinkedListNode append(LinkedListNode node1, LinkedListNode node2)
+	{
+		if(node1 == null)
+			return node2;
+		if(node2 == null)
+			return node1;
+
+		node2.Next(node1.Next());
+		node1.Next(node2);
+
+		return node2;
+	}
+	// Merge 2 sorted single linked lists
+	public static LinkedListNode merge(LinkedListNode list1, LinkedListNode list2)
+	{
+		if(list1 == null) return list2;
+		if(list2 == null) return list1;
+
+		LinkedListNode curr1 = list1, curr2 = list2;
+		LinkedListNode first = null, curr = null;
+		if(list1.Element() < list2.Element())
+		{
+			first = curr = list1;
+			curr1 = curr1.Next();
+		}
+		else
+		{
+			first = curr = list2;
+			curr2 = curr2.Next();
+		}
+
+		while(true)
+		{
+			// End of list1
+			if(curr1 == null)
+			{
+				curr.Next(curr2);
+				break;
+			}
+			// End of list2
+			if(curr2 == null)
+			{
+				curr.Next(curr1);
+				break;
+			}
+			if(curr1.Element() < curr2.Element())
+			{
+				curr.Next(curr1);
+				curr = curr1;
+				curr1 = curr1.Next();
+			}
+			else
+			{
+				curr.Next(curr2);
+				curr = curr2;
+				curr2 = curr2.Next();
+			}
+
+		}
+		return first;
+	}
+
+	public void RevIter()
+	{
+		first = RevIter(first);
+	}
+
+	private LinkedListNode RevIter(LinkedListNode list)
+	{
+		LinkedListNode prev = null, curr = list, next = null;
+		while(curr != null)
+		{
+			next = curr.Next();
+			curr.Next(prev);
+
+			prev = curr;
+			curr = next;
+		}
+		return prev;
+	}
+
+	public void RevRec()
+	{
+		first = RevRec(first);
+	}
+	// Destroys the original list
+	private LinkedListNode RevRec(LinkedListNode head)
+	{
+		if(head == null || head.Next() == null)
+			return head;
+
+		LinkedListNode tail = head.Next();
+		head.Next(null);
+
+		LinkedListNode rev = RevRec(tail);
+		tail.Next(head);
+		return rev;
+	}
+
+	public void Alt_Rev_Rec()
+	{
+		first = Alt_Rev_Rec(first);
+	}
+	// Reverse alternate nodes
+	// {1}->{1}, {1,2}->{2,1}, {1,2,3}->{2,1,3}, {1,2,3,4}->{2,1,4,3}
+	private LinkedListNode Alt_Rev_Rec(LinkedListNode list)
+	{
+		if(list == null || list.Next() == null)
+			return list;
+
+		LinkedListNode node1 = list;
+		LinkedListNode node2 = list.Next();
+		LinkedListNode tail = null;
+		if(node1 != null)
+		{
+			tail = (node2 != null)?node2.Next():null;
+
+			node2.Next(node1);
+			node1.Next(Alt_Rev_Rec(tail));
+		}
+		return node2;
+	}
+
+	public void Rev2Rec()
+	{
+		first = Rev2Rec(first);
+	}
+	private LinkedListNode Rev2Rec(LinkedListNode list)
+	{
+		if(list == null || list.Next() == null)
+			return list;
+
+		LinkedListNode temp = list.Next();
+		list.Next(Rev2Rec(temp.Next()));
+		temp.Next(list);
+
+		return temp;
+	}
+
+	public void Alt_Rev_Iter()
+	{
+		first = Alt_Rev_Iter(first);
+	}
+	private LinkedListNode Alt_Rev_Iter(LinkedListNode list)
+	{
+		if(list == null || list.Next() == null)
+			return list;
+
+		LinkedListNode fst = list, snd = null, result = list.Next();
+		LinkedListNode last = null;
+		LinkedListNode temp = null;
+
+		while(fst != null && (snd = fst.Next()) != null)
+		{
+			if(last != null)
+			{
+				last.Next(snd);
+			}
+			last = fst;
+
+			fst.Next(snd.Next());
+			snd.Next(fst);
+			fst = fst.Next();
+		}
+		return result;
+	}
+
+	public void ReverseK(int k)
+	{
+		first = ReverseK(first, k);
+	}
+	private LinkedListNode ReverseK(LinkedListNode list, int k)
+	{
+		if(list == null || list.Next() == null || k == 0)
+			return list;
+
+		LinkedListNode rfirst = null;
+		LinkedListNode curr = list, prevbegin = null;
+		LinkedListNode begink = list, endk = null, revk = null;
+		int nodeIndex = 0;
+		while(curr != null)
+		{
+			begink = curr;
+			for(nodeIndex = 1; (nodeIndex < k) && (curr != null); nodeIndex++)
+			{
+				curr = curr.Next();
+			}
+			if(curr != null) // Nodes still remain
+			{
+				endk = curr;
+				curr = curr.Next();
+
+				endk.Next(null);
+				revk = RevIter(begink);
+
+				if(rfirst == null)
+					rfirst = revk;
+				else
+					prevbegin.Next(revk);
+
+				prevbegin = begink;
+			}
+			else // EOL
+			{
+				if(rfirst == null)
+					rfirst = begink;
+				else
+					prevbegin.Next(begink);
+			}
+		}
+		return rfirst;
+	}
+
+	private void PrintReverse(LinkedListNode list)
+	{
+		if(list == null) return;
+		//System.out.print(list.Element() + " ");
+		PrintReverse(list.Next());
+		System.out.print(list.Element() + " ");
+	}
+
+    public String ToString()
+    {
+		return ToString(first);
+	}
+    public String ToString(LinkedListNode list)
+    {
+    	StringBuilder str = new StringBuilder("");
+    	for(LinkedListNode iter = list; iter != null; iter = iter.Next())
+    	{
+    		str = str.append(iter.Element()).append(" ");
+    	}
+    	return str.toString();
+    }
+
+	public LinkedListNode RevkIter(LinkedListNode list, int k)
+	{
+		if(list == null || k <= 1) return list;
+
+		LinkedListNode begin = null, prevEnd = null, nextBegin = null;
+		LinkedListNode current = list;
+		LinkedListNode revList = null;
+		int i = 0;
+		while(current != null)
+		{
+			for(i = 0, nextBegin = current; nextBegin != null && i < k; nextBegin = nextBegin.Next(), i++);
+
+			if(i == 0)
+			{
+				break;
+			}
+			else if(i == k)
+			{
+				revList = ReverseNextkIter(current, k);
+			}
+			else
+			{
+				revList = current;
+			}
+
+			if(begin == null)
+				begin = revList;
+			else
+				prevEnd.Next(revList);
+
+			prevEnd = current;
+			current = nextBegin;
+		}
+		return begin;
+	}
+	private LinkedListNode ReverseNextkIter(LinkedListNode list, int k)
+	{
+		LinkedListNode prev = null, temp = null;
+		LinkedListNode curr = list;
+		for(int i = 0; i < k; i++)
+		{
+			temp = curr.Next();
+			curr.Next(prev);
+
+			prev = curr;
+			curr = temp;
+		}
+		return prev;
+	}
+
+	public static LinkedListNode BT2DLL(MyBinaryNode tree)
+	{
+		if(tree == null)
+			return null;
+
+		LinkedListNode left = BT2DLL(tree.Left());
+		if(left != null)
+			left.append(new LinkedListNode(tree));
+		else
+			left = new LinkedListNode(tree);
+
+		LinkedListNode right = BT2DLL(tree.Right());
+		if(right != null)
+			left.append(right);
+
+		return left;
+	}
+
+	public static LinkedList CreateSortedList()
+	{
+		LinkedList list = new LinkedList();
+		list.add(new LinkedListNode('A'));
+		list.add('B');
+		LinkedListNode c = list.add('C');
+		//list.add('C');
+		list.add('D');
+		list.add('E');
+		list.add('F');
+		LinkedListNode g = list.add('G');
+		list.add('H');
+		list.add('I');
+		//list.add('J');
+		LinkedListNode j = list.add('J');
+		//j.Next(c);
+		list.add('K');
+		list.add('L');
+
+		return list;
+	}
+
+    public static void main(String args[])
+    {
+		LinkedList ll = LinkedList.CreateSortedList();
+    	/*SingleLL l2 = new SingleLL();
+    	ll2.add('X');
+    	ll2.add('Y');
+    	LinkedListNode z = l2.add('Z');
+    	z.Next(g);*/
+
+    	LinkedListNode zloop = ll.hasLoop(true);
+    	System.out.println("LL has loop: " + ((zloop == null)?"NO ":" YES ") + ((zloop != null)?zloop.Element():""));
+
+    	System.out.println("LL First: " + ll.ToString());
+    	LinkedListNode l1 = ll.RevkIter(ll.getList(), 1);
+    	System.out.println("LL RevkIter 1: " + ll.ToString(l1));
+    	l1 = ll.RevkIter(l1, 2);
+    	System.out.println("LL RevkIter 2: " + ll.ToString(l1));
+
+		LinkedList ll2 = LinkedList.CreateSortedList();
+    	l1 = ll2.RevkIter(ll2.getList(), 5);
+    	System.out.println("LL RevkIter 5: " + ll2.ToString(l1));
+
+		LinkedList ll3 = LinkedList.CreateSortedList();
+    	ll3.ReverseK(2);
+    	System.out.println("LL After ReverseK 2: " + ll3.ToString());
+		LinkedList ll4 = LinkedList.CreateSortedList();
+    	ll4.ReverseK(5);
+    	System.out.println("LL After ReverseK 5: " + ll4.ToString());
+
+    	//LinkedListNode zfork = l.findMergeNode(l.getList(), l2.getList());
+    	//System.out.println("LL fork node: " + ((zfork == null)?"NO ":" YES ") + ((zfork != null)?zfork.Element():""));
+
+    	/*System.out.println("LL: " + l.ToString());
+		l.Alt_Rev_Iter();
+    	System.out.println("LL Alt Rev Recursive: " + l.ToString());
+		l.Rev2Rec();
+    	System.out.println("LL Alt Rev Recursive2: " + l.ToString());*/
+
+    	/*l.RevIter();
+    	System.out.println("LL After Iter Reverse: " + l.ToString());
+
+    	l.RevRec();
+    	System.out.println("LL After Rec Reverse: " + l.ToString());
+
+    	l.PrintReverse(l.getList());
+
+		l.Alt_Rev_Rec();
+    	System.out.println("LL Alt Rev Recursive: " + l.ToString());
+
+    	l.Alt_Rev_Iter();
+		//System.out.println("");
+    	System.out.println("LL Alt Rev Iterative: " + l.ToString());*/
+
+		BinarySearchTree t = new BinarySearchTree();
+		BinarySearchTree.CreateComplexTree(t);
+
+        System.out.println("In-Order: " + t.InOSIter());
+		LinkedListNode tFirst = BT2DLL(t.Root());
+		System.out.println("DLL Begin: ");
+
+		LinkedListNode node = tFirst;
+		System.out.println(node.toString());
+		for(node = tFirst.Next(); node.Element() != tFirst.Element(); node = node.Next())
+		{
+			System.out.print(node.toString());
+		}
+		System.out.println("DLL End: ");
+    }
+}

@@ -1,0 +1,173 @@
+// The "cycle fixing" code is NOT correct...
+class Node
+{
+	Object data;
+	Node next;
+}
+
+public class ZFloydCycleFindingAlgorithm
+{
+
+	/**
+	 * Detects the presence of a cycle in a linked-list and returns a boolean
+	 * true if found, or false otherwise.
+	 */
+	public static Node hasCycle( Node head ) {
+
+		Node tortoise = head;
+		Node hare = head;
+
+		while( true ) {
+
+			// Move the pointers forward.
+			//
+			if( hare != null && hare.next != null ) {
+
+				// Move hare two steps forward.
+				//
+				hare = hare.next.next;
+
+				// Check if hare reached tortoise after being moved.
+				//
+				if( hare == tortoise ) {
+
+					// Cycle detected.
+					//
+					return hare;
+				}
+
+				// Move tortoise one step forward.
+				//
+				tortoise = tortoise.next;
+
+			} else {
+
+				// Reached the end of the list. No cycle detected.
+				//
+				return null;
+			}
+		}
+	}
+
+	/**
+	 * Detects the presence of a cycle in a linked-list and removes it.
+	 */
+	public static void removeCycle( Node head ) {
+
+		Node tortoise = head;
+		Node hare = head;
+
+		while( true ) {
+
+			// Move the pointers forward.
+			//
+			if( hare != null && hare.next != null ) {
+
+				// Move hare two steps forward.
+				//
+				hare = hare.next.next;
+
+				// Check if hare reached tortoise after being moved.
+				//
+				if( hare == tortoise ) {
+
+					// Cycle detected; have the tortoise loop again in order
+					// to find where the cycle starts.
+					//
+					while( hare.next != tortoise ) {
+						hare = hare.next;
+					}
+
+					// Remove the cycle, and return.
+					//
+					System.out.println("Cycle starts at Node " + hare.next.data);
+					hare.next = null;
+					return;
+				}
+
+				// Move tortoise one step forward.
+				//
+				tortoise = tortoise.next;
+
+			} else {
+
+				// Reached the end of the list. No cycle detected.
+				//
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Test Method
+	 */
+	public static void main( String[ ] args ) {
+
+		// Initialize the linked-list nodes
+		//
+		Node nodeA = new Node( );
+		Node nodeB = new Node( );
+		Node nodeC = new Node( );
+		Node nodeD = new Node( );
+		Node nodeE = new Node( );
+		Node nodeF = new Node( );
+		Node nodeG = new Node( );
+		/*Node nodeH = new Node( );
+		Node nodeI = new Node( );
+		Node nodeJ = new Node( );*/
+		Node nodeX = new Node( );
+		Node nodeY = new Node( );
+
+		nodeA.data = "A"; nodeA.next = nodeB;
+		nodeB.data = "B"; nodeB.next = nodeC;
+		nodeC.data = "C"; nodeC.next = nodeD;
+		nodeD.data = "D"; nodeD.next = nodeE;
+		nodeE.data = "E"; nodeE.next = nodeF;
+		nodeF.data = "F"; nodeF.next = nodeG;
+		nodeG.data = "G"; nodeG.next = nodeX; //nodeH
+		//nodeH.data = "H"; nodeH.next = nodeI;
+		//nodeI.data = "I"; nodeI.next = nodeJ;
+		nodeX.data = "X"; nodeX.next = nodeY;
+		nodeY.data = "Y"; nodeY.next = nodeF;
+
+		// Introduce a cycle in the linked-list
+		//
+		//nodeJ.data = "J"; nodeJ.next = nodeD;
+
+		// Test for the presence of a cycle.
+		//
+		//if( ZFloydCycleFindingAlgorithm.hasCycle( nodeA ) ) {
+		Node node = ZFloydCycleFindingAlgorithm.hasCycle( nodeA );
+		if( node != null) {
+
+			System.out.print( "Cycle detected!" );
+			System.out.println( " @ Node " + node.data );
+			System.out.println( "Removing the cycle, and checking again." );
+
+			// Remove detected cycle.
+			//
+			ZFloydCycleFindingAlgorithm.removeCycle( nodeA );
+
+			// Test for the presence of a cycle.
+			//
+			//if( ZFloydCycleFindingAlgorithm.hasCycle( nodeA ) ) {
+			if( null != ZFloydCycleFindingAlgorithm.hasCycle( nodeA ) ) {
+				System.out.println( "Failed removing cycle." );
+			} else {
+				System.out.println( "Cycle has successfully been removed." );
+
+				// Begin
+				System.out.print(" Printing node list.... ");
+				StringBuilder str = new StringBuilder(64);
+				for(node = nodeA; node != null; node = node.next)
+				{
+					str.append(node.data);
+				}
+				System.out.println(str);
+			}
+
+		} else {
+			System.out.println( "No cycle detected." );
+		}
+	}
+}
