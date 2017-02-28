@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="compile" name="Amazing Code">
+	<property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="obj.dir" location="classes" />
+    <property name="lib.dir" location="lib" />
+    <property name="src.dir" location="java" />
+
+    <path id="classpath.standard">
+        <pathelement location="${obj.dir}"/>
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+        <!-- fileset dir="/usr/local/share/java" includes="**/*.jar"/-->
+        <pathelement location="${obj.dir}/ctci"/>
+        <pathelement location="${obj.dir}/dp"/>
+        <pathelement location="${obj.dir}/g4g"/>
+        <pathelement location="${obj.dir}/gain"/>
+        <pathelement location="${obj.dir}/harry"/>
+        <pathelement location="${obj.dir}/llsq"/>
+        <pathelement location="${obj.dir}/sortsearch"/>
+        <pathelement location="${obj.dir}/tree"/>
+    </path>
+
+    <target name="init">
+		<mkdir dir="${obj.dir}" />
+		<!-- mkdir dir="${lib.dir}" /-->
+    </target>
+
+    <target name="clean">
+		<delete dir="${obj.dir}" />
+		<delete file="${jar}" />
+		<delete dir="index" />
+    </target>
+
+    <target name="compile" depends="init">
+		<property name="Amaze.classpath" refid="classpath.standard"/>
+		<!-- Emit the property to the ant console -->
+		<echo message="CLASSPATH = ${Amaze.classpath}"/>
+
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" optimize="on" debuglevel="${debuglevel}" srcdir="${src.dir}" destdir="${obj.dir}" includeantruntime="false" includes="**/*.java">
+			<compilerarg value="-Xlint:all" />
+            <classpath refid="classpath.standard"/>
+			<exclude name="**/wip/**" />
+			<exclude name="WIP*.java"/>
+			<exclude name="Dobb*.java"/>
+        </javac>
+    </target>
+
+	<target name="jar" depends="compile">
+		<jar destfile="${jar}">
+			<fileset dir="${obj.dir}" includes="**/*.class" />
+		</jar>
+	</target>
+
+	<target name="stack" depends="compile">
+		<java classname="Stack" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="queue" depends="compile">
+		<java classname="Queue" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="list" depends="compile">
+		<java classname="LinkedList" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="bt" depends="compile">
+		<java classname="tree.BinaryTree" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	<target name="btt" depends="compile">
+		<java classname="BinaryTreeTraversals" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<!-- Harry He book file builds -->
+	<target name="hds" depends="compile">
+		<java classname="DS" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="ctc1" depends="compile">
+		<java classname="CTCICh1" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="ctc3" depends="compile">
+		<java classname="CTCI\CTCICh3" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="ctc8" depends="compile">
+		<java classname="CTCICh8DynProg" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	<target name="ctc10" depends="compile">
+		<java classname="CTCICh10SortSearch" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="ctc13" depends="compile">
+		<java classname="CTCICh13" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	<target name="ctcmod" depends="compile">
+		<java classname="CTCICh16Moderate" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	<target name="ctchard" depends="compile">
+		<java classname="CTCICh17Hard" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="glo" depends="compile">
+		<java classname="Gainlo" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="ibarr" depends="compile">
+		<java classname="IBArray" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	
+	<target name="pie" depends="compile">
+		<java classname="Pie" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="search" depends="compile">
+		<java classname="Searching" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="bst" depends="compile">
+		<java classname="BinarySearchTree" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="dobb" depends="compile">
+		<java classname="DobbTreapDemo" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="tik" depends="compile">
+		<java classname="TreapImplicitKey" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="it" depends="compile">
+		<java classname="ImplicitTreap" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="heap" depends="compile">
+		<java classname="MaxHeap" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="ADq" depends="compile">
+		<java classname="ArrayDequeTest" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="BS" depends="compile">
+		<java classname="BitSort" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="sort" depends="compile">
+		<java classname="Sorting" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="mysearch" depends="compile">
+		<java classname="MySearch" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="print" depends="compile">
+		<java classname="PrettyPrintTree" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="bit" depends="compile">
+		<java classname="BitMath" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="lda" depends="compile">
+		<java classname="LambdaJava8" fork="true">
+			<classpath refid="classpath.slim" />
+		</java>
+	</target>
+
+	<target name="har" depends="compile">
+		<!--java classname="harry.HarryHe" fork="true"-->
+		<java classname="com.book.harry.HarryHeFindInPartiallySortedMatrix" fork="true">
+		<!--java classname="Q14SortLinkedList" fork="true"-->
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	
+	<target name="harry" depends="compile">
+		<!--java classname="harry.HarryHe" fork="true"-->
+		<!--java classname="harry.HarryHeFindInPartiallySortedMatrix" fork="true"-->
+		<java classname="Q14SortLinkedList" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	<target name="slide" depends="compile">
+		<!--java classname="harry.HarryHe" fork="true"-->
+		<!--java classname="harry.HarryHeFindInPartiallySortedMatrix" fork="true"-->
+		<java classname="Slide" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="g4g" depends="compile">
+		<!--java classname="harry.HarryHe" fork="true"-->
+		<!--java classname="harry.HarryHeFindInPartiallySortedMatrix" fork="true"-->
+		<java classname="G4GBinaryTree" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<target name="json" depends="compile">
+		<java classname="JsonParse" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<!-- Dynamic Programming -->
+	<target name="dp" depends="compile">
+		<java classname="DynProg" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	<target name="dp2" depends="compile">
+		<java classname="DynProg2" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	<target name="dpA" depends="compile">
+		<java classname="DynProgA" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	<target name="dpB" depends="compile">
+		<java classname="DynProgB" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	<target name="horse" depends="compile">
+		<java classname="BlackWhiteHorses" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+</project>
