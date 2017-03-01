@@ -1,3 +1,5 @@
+package bits;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -129,7 +131,62 @@ public class BitMath
 		}
 	}
 	// END Cracking the Coding Interview Ch. 05
-
+	
+	private static int leftmostBit(int n) {
+		int b = 0;
+		while(n > 0) {
+			n >>>= 1;
+			b++;
+		}
+		return b;
+	}
+	public static int onBitsRec(int n) {
+		if(n < 3) return n;
+		int k = leftmostBit(n);
+		if(isPowerOf2(n)) {
+			return 1 + (k-1)*(1 <<(k-2));
+		}
+		if(isPowerOf2(n+1)) {
+			return k*(1 <<(k-1));
+		}
+		int tillPowerOf2 = 1 + (k-1)*(1 <<(k-2));
+		int leftMostBits = n - (1 <<(k-1));
+		int sum = tillPowerOf2 + leftMostBits;
+		return sum + onBitsRec(leftMostBits);
+	}
+	public static int onBitsIter(int n) {
+		int sum = 0;
+		while(n >= 3) {
+			int k = leftmostBit(n);
+			if(isPowerOf2(n)) {
+				sum += 1 + (k-1)*(1 <<(k-2));
+				return sum;
+			}
+			else if(isPowerOf2(n+1)) {
+				sum += k*(1 <<(k-1));
+				return sum;
+			}
+			else {
+				sum += 1 + (k-1)*(1 <<(k-2)) + n -(1 <<(k-1));
+			}
+			n -= (1 <<(k-1));
+		}
+		sum += n;
+		return sum;
+	}
+	public static int onBits(int n) {
+		int sum = 0;
+		while(n >= 3) {
+			int k = leftmostBit(n);
+			sum += 1 + (k-1)*(1 <<(k-2));
+			int remBits = n -(1 <<(k-1));
+			sum += remBits;
+			n -= remBits;
+		}
+		sum += n;
+		return sum;
+	}
+	
 	private static void testPalindrome(int val)
 	{
 		int i = 0, valp = 0;
@@ -176,7 +233,13 @@ public class BitMath
 		System.out.println("B4 Swap: " + Integer.toBinaryString(n) + "\n" +
 			"A4 Swap: " + Integer.toBinaryString(pairwiseBitSwap(n)));
 	}
-
+	private static void testonBits()
+	{
+		for(int i = 1; i < 65; i++) {
+		//for(int i = 1; i < 264; i+=5) {
+			System.out.println("onBits:\t" + i + "\t" + onBitsRec(i) + "\t" + onBitsIter(i) /*+ "\t" + onBits(i)*/);
+		}
+	}
 
 	public static void main(String args[])
     {
@@ -213,6 +276,8 @@ public class BitMath
 
 		testdoubleToBinaryString(0.125);
 		testdoubleToBinaryString(0.72);
+
+		testonBits();
 
 		System.out.println("No of bytes in int & long " + Integer.SIZE/8 + " " + Long.SIZE/8);
 		System.out.println("fraction % 2.55%10 = " + (int)2.55%10);
