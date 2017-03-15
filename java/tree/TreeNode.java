@@ -16,7 +16,7 @@ public class TreeNode //implements Comparable<BinaryNode>
     // Friendly data; accessible by other package routines
 	//private final char nodeValue;
 	public int val;
-	public TreeNode left, right;         // left child
+	public TreeNode left, right, next;         // left child
 
     // Constructors
     TreeNode(int value)

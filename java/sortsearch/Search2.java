@@ -1,24 +1,27 @@
+package sortsearch;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.BitSet;
 
-public class MySearch
+public class Search2
 {
-	// For all sorts print the pre-/post- sorted arrays
-	// and the no. of swaps
-	public static int[] getIntArrayCopy(int is[])
-	{
-		int isNew[] = new int[is.length];
-		System.arraycopy(is, 0, isNew, 0, is.length);
-		return isNew;
+	// move zeros in array to end
+	public static void moveZeros(int[] arr) {
+		int intpos = 0;
+		for(int i = 0; i < arr.length; i++) {
+			if(arr[i] != 0) {
+				if(i != intpos) {
+					int temp = arr[i];
+					arr[i] = arr[intpos];
+					arr[intpos] = temp;
+				}
+				intpos++;
+			}
+		}
 	}
-	public static char[] getCharArrayCopy(char chs[])
-	{
-		char chNew[] = new char[chs.length];
-		System.arraycopy(chs, 0, chNew, 0, chs.length);
-		return chNew;
-	}
+	// #TODO Replace every element in integer array by greatest number on its right (java/ example)
 	
 	public static void Find2Dupes(int A[])
 	{
@@ -441,20 +444,57 @@ public class MySearch
 		return i;
 	}
 
+	// For all sorts print the pre-/post- sorted arrays
+	// and the no. of swaps
+	public static int[] arraycopy(int is[])
+	{
+		int isNew[] = new int[is.length];
+		System.arraycopy(is, 0, isNew, 0, is.length);
+		return isNew;
+	}
+	public static char[] arraycopy(char chs[])
+	{
+		char chNew[] = new char[chs.length];
+		System.arraycopy(chs, 0, chNew, 0, chs.length);
+		return chNew;
+	}
+	private static void testmovezeros() {
+		int a[] = {0, 6, 9, 4, 15, 21, 17};
+		System.out.print("move0: " + Arrays.toString(a));
+		moveZeros(a);
+		System.out.println(" after: " + Arrays.toString(a));
+
+		a = new int[] {6, 9, 4, 15, 21, 17};
+		System.out.print("move0: " + Arrays.toString(a));
+		moveZeros(a);
+		System.out.println(" after: " + Arrays.toString(a));
+
+		a = new int[] {6, 9, 0, 4, 0, 15, 0, 21, 17};
+		System.out.print("move0: " + Arrays.toString(a));
+		moveZeros(a);
+		System.out.println(" after: " + Arrays.toString(a));
+
+		a = new int[] {6, 9, 4, 15, 21, 17, 0, 0, 0};
+		System.out.print("move0: " + Arrays.toString(a));
+		moveZeros(a);
+		System.out.println(" after: " + Arrays.toString(a));
+
+	}
     public static void main(String args[])
     {
+		testmovezeros();
 		char arr[] = {'Z', 'Y', 'X', 'W', 'V', 'U', 'T', 'S' , 'R', 'Q'};
 		/*
 		//int A[] = {1, 9, 2, 1, 8, 10, 5, 7, 6, 4, 3, 7};
 		int A[] = {7, 9, 2, 4, 8, 7, 5, 1, 6, 4, 3, 10};
 		//int A[] = {6, 2, 6, 5, 2, 4, 3, 1};
-		Find2Dupes(getIntArrayCopy(A));
-		Find2DupesXOR(getIntArrayCopy(A));
+		Find2Dupes(arraycopy(A));
+		Find2DupesXOR(arraycopy(A));
 		*/
 		int B[] = {7, 9, 2, 11, 8, 7, 5, 1, 6, 4, 12, 10};
-		//FindDupeMiss(getIntArrayCopy(B));
-		//FindDupeMissExact(getIntArrayCopy(B));
-		FindDupeMissXOR(getIntArrayCopy(B));
+		//FindDupeMiss(arraycopy(B));
+		//FindDupeMissExact(arraycopy(B));
+		FindDupeMissXOR(arraycopy(B));
 		//DecIncBitonic();
 		
 
@@ -464,7 +504,7 @@ public class MySearch
 
 		/*int[] ints = {20, 24, 27, 30, 33, 36, 38, 41, 45, 46, 47, 49, 51, 53, 55, 56, 67, 72, 1, 2, 4, 5, 7, 8, 10, 11, 13, 15, 16, 17, 19};
 
-    	System.out.println("EO:: " + Arrays.toString(SeparateEvenOdd(getIntArrayCopy(ints))));
+    	System.out.println("EO:: " + Arrays.toString(SeparateEvenOdd(arraycopy(ints))));
 
     	System.out.println("FindOffsetInRotArray (17): " +  FindOffsetInRotArray(ints));
     	int[] int1 = {20, 23, 24, 1, 2, 4, 5, 7, 8, 10, 11, 13, 15, 16};

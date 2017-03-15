@@ -1,3 +1,5 @@
+package harry;
+
 import java.util.Arrays;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -16,26 +18,26 @@ import java.util.BitSet;
 public class Slide
 {
 	// Find max in sliding window of size k (< N)
-	public static int[] maxInSlidingWindow(int[] a, int k)
+	public static int[] maxInSlidingWindow(int[] arr, int k)
 	{
 		ArrayDeque<Integer> dq = new ArrayDeque<>();
-		int[] maxs = new int[a.length - k+1];
+		int[] maxs = new int[arr.length - k+1];
 		for(int i = 0; i < k-1; i++) {
-			addToWin(dq, a, i, k);
+			addToWin(dq, arr, i, k);
 		}
-		for(int i = k-1; i < a.length; i++) {
-			addToWin(dq, a, i, k);
-			maxs[i-k+1] = a[dq.getFirst()];
+		for(int i = k-1; i < arr.length; i++) {
+			addToWin(dq, arr, i, k);
+			maxs[i-k+1] = arr[dq.getFirst()];
 		}
 		return maxs;
 	}
-	private static void addToWin(Deque<Integer> dq, int[] a, int i, int k)
+	private static void addToWin(Deque<Integer> dq, int[] arr, int i, int k)
 	{
-		while(!dq.isEmpty() && a[dq.getLast()] <= a[i]) {
-			dq.removeLast();
-		}
-		if(!dq.isEmpty() && dq.getLast() < i-k) {
+		if(!dq.isEmpty() && i - dq.getFirst() > k) {
 			dq.removeFirst();
+		}
+		while(!dq.isEmpty() && arr[dq.getLast()] <= arr[i]) {
+			dq.removeLast();
 		}
 		dq.addLast(i);
 	}
@@ -44,7 +46,7 @@ public class Slide
 	{
 		int[] arr = new int[] {1, 3, -1, -3, 5, 3, 6, 7};
 		System.out.println("max 3: " + Arrays.toString(arr) + " " + Arrays.toString(maxInSlidingWindow(arr, 3)));
-		arr = new int[] {10, 20, 30, 50, 10, 30, 70};
+		arr = new int[] {1, 2, 3, 5, 3, 1, 6};
 		System.out.println("max 3: " + Arrays.toString(arr) + " " + Arrays.toString(maxInSlidingWindow(arr, 3)));
 	}
 

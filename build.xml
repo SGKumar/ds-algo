@@ -70,24 +70,74 @@
 		</java>
 	</target>
 
+	<!-- TREE file builds -->
 	<target name="bt" depends="compile">
 		<java classname="tree.BinaryTree" fork="true">
 			<classpath refid="classpath.standard" />
 		</java>
 	</target>
 	<target name="btt" depends="compile">
-		<java classname="BinaryTreeTraversals" fork="true">
+		<java classname="tree.BinaryTreeTraversals" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	<target name="bst" depends="compile">
+		<java classname="tree.BinarySearchTree" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	<target name="print" depends="compile">
+		<java classname="PrettyPrintTree" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<!-- Gainlo Blog file builds -->
+	<target name="glo" depends="compile">
+		<java classname="gain.Gainlo" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+
+	<!-- InterviewBit portal file builds -->
+	<target name="ibarr" depends="compile">
+		<java classname="IBArray" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	
+	<!-- Geek for Geek website file builds -->
+	<target name="g4g" depends="compile">
+		<!--java classname="harry.HarryHe" fork="true"-->
+		<!--java classname="harry.HarryHeFindInPartiallySortedMatrix" fork="true"-->
+		<java classname="G4GBinaryTree" fork="true">
 			<classpath refid="classpath.standard" />
 		</java>
 	</target>
 
 	<!-- Harry He book file builds -->
+	<target name="har" depends="compile">
+		<!--java classname="harry.HarryHe" fork="true"-->
+		<java classname="com.book.harry.HarryHeFindInPartiallySortedMatrix" fork="true">
+		<!--java classname="Q14SortLinkedList" fork="true"-->
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
+	
+	<target name="harry" depends="compile">
+		<!--java classname="harry.HarryHe" fork="true"-->
+		<!--java classname="harry.HarryHeFindInPartiallySortedMatrix" fork="true"-->
+		<java classname="Q14SortLinkedList" fork="true">
+			<classpath refid="classpath.standard" />
+		</java>
+	</target>
 	<target name="hds" depends="compile">
 		<java classname="DS" fork="true">
 			<classpath refid="classpath.standard" />
 		</java>
 	</target>
 
+	<!-- Crack the Coding Interview book file builds -->
 	<target name="ctc1" depends="compile">
 		<java classname="CTCICh1" fork="true">
 			<classpath refid="classpath.standard" />
@@ -127,18 +177,7 @@
 		</java>
 	</target>
 
-	<target name="glo" depends="compile">
-		<java classname="Gainlo" fork="true">
-			<classpath refid="classpath.standard" />
-		</java>
-	</target>
-
-	<target name="ibarr" depends="compile">
-		<java classname="IBArray" fork="true">
-			<classpath refid="classpath.standard" />
-		</java>
-	</target>
-	
+	<!-- Programming Interviews Exposed book file builds -->
 	<target name="pie" depends="compile">
 		<java classname="Pie" fork="true">
 			<classpath refid="classpath.standard" />
@@ -147,12 +186,6 @@
 
 	<target name="search" depends="compile">
 		<java classname="Searching" fork="true">
-			<classpath refid="classpath.standard" />
-		</java>
-	</target>
-
-	<target name="bst" depends="compile">
-		<java classname="BinarySearchTree" fork="true">
 			<classpath refid="classpath.standard" />
 		</java>
 	</target>
@@ -199,20 +232,14 @@
 		</java>
 	</target>
 
-	<target name="mysearch" depends="compile">
-		<java classname="MySearch" fork="true">
-			<classpath refid="classpath.standard" />
-		</java>
-	</target>
-
-	<target name="print" depends="compile">
-		<java classname="PrettyPrintTree" fork="true">
+	<target name="s2" depends="compile">
+		<java classname="sortsearch.Search2" fork="true">
 			<classpath refid="classpath.standard" />
 		</java>
 	</target>
 
 	<target name="bit" depends="compile">
-		<java classname="BitMath" fork="true">
+		<java classname="bits.BitMath" fork="true">
 			<classpath refid="classpath.standard" />
 		</java>
 	</target>
@@ -223,33 +250,10 @@
 		</java>
 	</target>
 
-	<target name="har" depends="compile">
-		<!--java classname="harry.HarryHe" fork="true"-->
-		<java classname="com.book.harry.HarryHeFindInPartiallySortedMatrix" fork="true">
-		<!--java classname="Q14SortLinkedList" fork="true"-->
-			<classpath refid="classpath.standard" />
-		</java>
-	</target>
-	
-	<target name="harry" depends="compile">
-		<!--java classname="harry.HarryHe" fork="true"-->
-		<!--java classname="harry.HarryHeFindInPartiallySortedMatrix" fork="true"-->
-		<java classname="Q14SortLinkedList" fork="true">
-			<classpath refid="classpath.standard" />
-		</java>
-	</target>
 	<target name="slide" depends="compile">
 		<!--java classname="harry.HarryHe" fork="true"-->
 		<!--java classname="harry.HarryHeFindInPartiallySortedMatrix" fork="true"-->
-		<java classname="Slide" fork="true">
-			<classpath refid="classpath.standard" />
-		</java>
-	</target>
-
-	<target name="g4g" depends="compile">
-		<!--java classname="harry.HarryHe" fork="true"-->
-		<!--java classname="harry.HarryHeFindInPartiallySortedMatrix" fork="true"-->
-		<java classname="G4GBinaryTree" fork="true">
+		<java classname="harry.Slide" fork="true">
 			<classpath refid="classpath.standard" />
 		</java>
 	</target>

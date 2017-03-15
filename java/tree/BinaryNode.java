@@ -20,15 +20,15 @@ public class BinaryNode //implements Comparable<BinaryNode>
 {
     // Friendly data; accessible by other package routines
 	//private final char nodeValue;
-	private char data;
+	public char val;
     int preIL = 0;
-    HashMap<Integer, Integer> m_vertSum;
-	public char value() { return data; }
-	public char val() { return data; }
-	public void value(char val) { data = val; }
+    //HashMap<Integer, Integer> m_vertSum;
+	public char value() { return val; }
+	public char val() { return val; }
+	public void value(char v) { val = v; }
 
-	private BinaryNode left, right;         // left child
-	private BinaryNode next;
+	public BinaryNode left, right;         // left child
+	public BinaryNode next;
 	private BinaryNode gp;
 	private BinaryNode parent;
 
@@ -59,7 +59,7 @@ public class BinaryNode //implements Comparable<BinaryNode>
     // Constructors
     BinaryNode(char value)
     {
-        data = value;
+        val = value;
         left = right = null;
         //prev = next = null;
     }
@@ -76,7 +76,7 @@ public class BinaryNode //implements Comparable<BinaryNode>
 	public void prettyPrint()
 	//public void prettyPrint(int height)
 	{
-		System.out.println(prettyPrint(this, 1, getHeight()));
+		System.out.println(prettyPrint(this, 1, height()));
 	}
 
 	private StringBuilder prettyPrint(BinaryNode root, int currentHeight, int totalHeight)
@@ -90,9 +90,9 @@ public class BinaryNode //implements Comparable<BinaryNode>
 			String block = new String(new char[spaces+1]).replace("\0", row);
 			return new StringBuilder(block);
 		}
-		if(currentHeight==totalHeight) return new StringBuilder(root.data+"");
+		if(currentHeight==totalHeight) return new StringBuilder(root.val+"");
 		int slashes = getSlashCount(totalHeight-currentHeight +1);
-		sb.append(String.format("%"+(spaces+1)+"s%"+spaces+"s", root.data+"", ""));
+		sb.append(String.format("%"+(spaces+1)+"s%"+spaces+"s", root.val+"", ""));
 		sb.append("\n");
 		//now print / and \
 		// but make sure that left and right exists
@@ -153,17 +153,17 @@ public class BinaryNode //implements Comparable<BinaryNode>
 		System.out.print(root.data+" ");
 		inorder(root.right);
 	}*/
-	public int getHeight() 
+	public int height() 
 	{
-		return getHeight(this);
+		return height(this);
 	}
-	private int getHeight(BinaryNode root)
+	private int height(BinaryNode root)
 	{
 		if (root == null) return 0;
-		return Math.max(getHeight(root.left), getHeight(root.right))+1;
+		return Math.max(height(root.left), height(root.right))+1;
 	}
 	@Override
 	public String toString() {
-		return this.data+"";
+		return this.val+"";
 	}
 }

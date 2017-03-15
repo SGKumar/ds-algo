@@ -212,6 +212,88 @@ public class BinaryTreeTraversals
 		return str.toString();
 	}
 
+	public static String zigzag(BinaryNode root) {
+		if(null == root) return "";
+
+		Queue<BinaryNode> q = new Queue<>();
+		Stack<BinaryNode> s = new Stack<>();
+		StringBuilder str = new StringBuilder();
+
+		BinaryNode node = root;
+		q.add(node);
+		int currLevel = 1, nextLevel = 0;
+		boolean r2l = true;
+
+		while(!q.isEmpty()) {
+			node = q.remove();
+			currLevel--;
+			str.append(node.value());
+			if(r2l) {
+				if(node.right() != null) {
+					s.push(node.right());
+					nextLevel++;
+				}
+				if(node.left() != null) {
+					s.push(node.left());
+					nextLevel++;
+				}
+			}
+			else {
+				if(node.left() != null) {
+					s.push(node.left());
+					nextLevel++;
+				}
+				if(node.right() != null) {
+					s.push(node.right());
+					nextLevel++;
+				}
+			}
+			if(currLevel == 0 && nextLevel > 0) {
+				r2l = !r2l;
+				currLevel = nextLevel;
+				nextLevel = 0;
+				while(!s.isEmpty()) {
+					q.add(s.pop());
+				}
+			}
+		}
+		return str.toString();
+	}
+	public static String zigzag2(BinaryNode root) {
+		if(null == root) return "";
+
+		Stack<BinaryNode> l2r = new Stack<>();
+		Stack<BinaryNode> r2l = new Stack<>();
+		StringBuilder str = new StringBuilder();
+
+		l2r.push(root);
+
+		while(!l2r.isEmpty() || !r2l.isEmpty()) {
+			while(!l2r.isEmpty()) {
+				BinaryNode node = l2r.pop();
+				str.append(node.value());
+				if(node.left() != null) {
+					r2l.push(node.left());
+				}
+				if(node.right() != null) {
+					r2l.push(node.right());
+				}
+			}
+
+			while(!r2l.isEmpty()) {
+				BinaryNode node = r2l.pop();
+				str.append(node.value());
+				if(node.right() != null) {
+					l2r.push(node.right());
+				}
+				if(node.left() != null) {
+					l2r.push(node.left());
+				}
+			}
+		}
+		return str.toString();
+	}
+
 	public static String printLevelOrderLinebyline(BinaryNode node)
 	{
 		StringBuilder str = new StringBuilder();
@@ -381,18 +463,6 @@ public class BinaryTreeTraversals
 		}
 		return sb.toString();
 	}
-
-	// 2 trees are isomorphic if their structure is the same.
-	public boolean isomorphic(BinaryNode t1, BinaryNode t2)
-	{
-		if(t1 == null && t2 == null) {
-			return true;
-		}
-		if((t1 == null && t2 != null) || (t1 != null && t2 == null)) {
-			return false;
-		}
-		return isomorphic(t1.left(), t2.left()) && isomorphic(t1.right(), t2.right());
-	}
 	// bible, geek4geeks.com leetcode END
 
 	/*
@@ -429,31 +499,88 @@ public class BinaryTreeTraversals
 		return levels;
 	}
 
-	// Fill NextSibling pointer when available, all NULL initially.
-	private static String setNextSibling(BinaryNode root)
-	{
-		System.out.println("### setNextSibling might have a BUG, check with INTERVIEWBIT same prob/code");
+	// fill nextSibling pointer when available, all NULL initially.
+	public static String setNextRec(BinaryNode node) {
+		if(node == null) return "";
+		
+		if(node.right() != null) {
+			node.right().next(nextKid(node));
+		}
+		if(node.left() != null) {
+			node.left().next((node.right() != null)?node.right():nextKid(node));
+		}
+		return node.toStringFlat() + setNextRec(node.right()) + setNextRec(node.left());
+	}
+	public static String setNextIter(BinaryNode root) {
+		System.out.println("### setNextIter BUG fixed leveraging INTERVIEWBIT same prob");
 		if(root == null) return "";
 		StringBuilder str = new StringBuilder(512);
 		Queue<BinaryNode> queue = new Queue<>();
 		queue.add(root);
 
-		while(!queue.isEmpty())
-		{
+		while(!queue.isEmpty()) {
 			BinaryNode node = queue.remove();
 
-			if(node.left() != null)
-			{
-				node.left().next(node.right());
+			if(node.left() != null) {
+				node.left().next((node.right() != null)?node.right():nextKid(node));
 				queue.add(node.left());
 			}
-			if(node.right() != null)
-			{
-				if(node.next() != null)
-					node.right().next(node.next().left());
+			if(node.right() != null) {
+				node.right().next(nextKid(node));
 				queue.add(node.right());
 			}
-			str.append(node);
+			str.append(node.toStringFlat());
+		}
+		return str.toString();
+	}
+	// node will never be null
+	private static BinaryNode nextKid(BinaryNode node) {
+		BinaryNode temp = null;
+		while(node.next() != null) {
+			if(node.next().left() != null) {
+				temp = node.next().left();
+				break;
+			}
+			if(node.next().right() != null) {
+				temp = node.next().right();
+				break;
+			}
+			node = node.next();
+		}
+		return temp;
+	}
+	public static String nextIter(TreeNode root) {
+		System.out.println("### nextIter MOST ELEGANT do curr level NOT look-ahead like before");
+		if(root == null) return "";
+
+		StringBuilder str = new StringBuilder(512);
+		Queue<TreeNode> queue = new Queue<>();
+		queue.add(root);
+
+		int currLevel = 1, nextLevel = 0;
+		while(!queue.isEmpty()) {
+			TreeNode node = queue.remove();
+			currLevel--;
+			if(node.left != null) {
+				queue.add(node.left);
+				nextLevel++;
+			}
+			if(node.right != null) {
+				queue.add(node.right);
+				nextLevel++;
+			}
+			
+			str.append(node.val);
+			// Not end of list @curr level
+			if(currLevel > 0) {
+				node.next = queue.peek();
+				str.append("->").append(node.next).append("\t");
+			}
+			else {
+				currLevel = nextLevel;
+				nextLevel = 0;
+				str.append("\t");
+			}
 		}
 		return str.toString();
 	}
@@ -461,12 +588,12 @@ public class BinaryTreeTraversals
 	public static void main(String[] args)
 	{
 		BinaryNode t = BinaryTree.smallTree();
-		//traversals(t);
+		traversals(t);
 		btHardQues(t);
 		btBibleG4GLeet(t);
 
 		t = BinaryTree.complexTree();
-		//traversals(t);
+		traversals(t);
 		btHardQues(t);
 		btBibleG4GLeet(t);
 		
@@ -497,19 +624,21 @@ public class BinaryTreeTraversals
 
 		System.out.println("BFSRev:: Level-Order Search Iterative R2L: " + t.LevelOSR2LIter());
 		System.out.println("BFSRev:: Level-Order Search Iterative Reverse: " + t.LevelOSReverseIter());
-		System.out.println("BFSZigZag:: Level-Order Search ZigZag Old : " + t.LevelOSZigZagIterOld());
-		System.out.println("BFSZigZag:: Level-Order Search ZigZag New : " + t.LevelOSZigZagIter());
-
 		*/
+		System.out.println("zigzag : " + zigzag(t));
+		System.out.println("zigzag2: " + zigzag2(t));
+		//System.out.println("BFSZigZag:: Level-Order Search ZigZag New : " + t.LevelOSZigZagIter());
+
         // Vertical Sum
         System.out.println("Vertical Sum : " + vertSum(t));
-        System.out.println("TODO Need to check how nextSibling is set and print out");
 
-        //t.SetNextSiblingRec1(t.Root());
-        //System.out.println("Sibling: " + t.GetNextSibling());
-        //t.SetNextSiblingIter();
-        //System.out.println("Sibling: " + t.GetNextSibling());
-        System.out.println("SetNextSibling : " + setNextSibling(t));
+		System.out.println("### setNextRec CODED leveraging INTERVIEWBIT same prob");
+		System.out.println("### setNextRec CODED USING reverse pre-order search");
+        System.out.println("sibling rec : " + setNextRec(t));
+        System.out.println("sibling iter: " + setNextIter(t));
+		
+		TreeNode tn = BinaryTreeBase.smallTree3();
+        System.out.println("nextIter best: " + nextIter(tn));
     }
 	
 	private static void testnextPower(BinaryTree t)

@@ -96,6 +96,16 @@ public class BinaryTreeBase
 								68, -1, -1, -1, -1, 76, 82, -1, 67, 69, -1, 77, -1, -1, -1, -1, -1, 70, -1, -1};
 		return createTree(vals);
 	}
+	public static TreeNode smallTree3() {
+		int[] vals = new int[] {35, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1, -1, -1, -1, 10, 11, 12, -1, -1, -1, -1, 13, 
+								-1, 14, -1, 15, -1, -1, 16, 17, -1, -1, -1, -1, -1, -1};
+		return createTree(vals);
+	}
+	public static TreeNode smallTree4() {
+		int[] vals = new int[] {35, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1, -1, 10, -1, -1, 11, 12, -1, -1, -1, -1, 13, 
+								-1, 14, -1, 15, -1, 16, 17, 18, -1, -1, -1, -1, -1, -1};
+		return createTree(vals);
+	}
 	public static TreeNode BigTree3() {
 		int[] vals = new int[] {763, 3, 7, 9, 9, 0, -1, -1, 2, 1, 4, 3, 2, 5, 2, 2, 4, 8, 1, 1, 4, 9, 0, -1, 8, 3, 5, 2, 5,
 							-1, 1, 6, 2, 8, 1, 0, 7, 3, -1, 7, -1, 6, 6, 1, 7, 1, 5, 9, 4, 7, -1, 7, -1, -1, -1, 6, 2,
@@ -128,6 +138,12 @@ public class BinaryTreeBase
 							-1, 8, -1, -1, -1, -1, -1, 2, -1, 4, 2, -1, -1, 6, 8, -1, -1, -1, -1, -1, 4, -1, -1
 			};
 		return createTree(vals);
+	}
+	public static TreeNode smallBst1() {
+		int[] vals = new int[] {35, 20, 10, 30, 6, 16, 26, 36, 4, 8, 12, 18, 24, 28, 32, 38, -1, -1, -1, -1, -1, 14, -1, -1,
+							-1, -1, -1, -1, -1, 34, -1, -1, -1, -1, -1, -1};
+		return createTree(vals);
+		
 	}
 	
 	public static BinaryNode smallTree()
@@ -167,44 +183,53 @@ public class BinaryTreeBase
 		// J - 74, K - 75, L - 76, M - 77, N - 78, O - 79, P - 80, Q - 81, R - 82
 		// S - 83, T - 84, U - 85, V - 86, W - 87, X - 88, Y - 89, Z - 90
 		//
-		/*						N
+		/*						Q
 							  /   \
-							H       P
+							H       U
 						  /  \     /  \
-						 B	  J   O    Q
-						/\    /\        \
-					   A  G  I  K        S
-						 /       \      /
-						D         L    R
-					   / \         \
-					  C   E         M
-						   \
-							F
+						 B	  J   R    V
+						/\    /\   \    \
+					   A  G  I  K   S    X
+						 /       \   \   /\
+						D         L   T W  Z
+					   / \         \       /
+					  C   E         N     Y
+						   \       / \
+							F     M   O
+							           \
+									    P
 
 		*/
 		//char tree[] = new char[] {1,2,3,4,5,6,7,8,-1,9,-1,-1,12,14,17,-1,-1,-1,10,13,-1,15,-1,-1,-1,-1,-1,-1,-1,-1,-1,11,-1,-1,-1,-1,16};
 		BinaryTreeBase t = new BinaryTreeBase();
-		t.insert( new BinaryNode((char)78)); // N
-		t.insert( new BinaryNode((char)72)); // H
-		t.insert( new BinaryNode((char)80)); // P
-		t.insert( new BinaryNode((char)66)); // B
-		t.insert( new BinaryNode((char)74)); // J
-		t.insert( new BinaryNode((char)79)); // O
 		t.insert( new BinaryNode((char)81)); // Q
-		t.insert( new BinaryNode((char)83)); // S
-		t.insert( new BinaryNode((char)82)); // R
+		t.insert( new BinaryNode((char)72)); // H
+		t.insert( new BinaryNode((char)66)); // B
 		t.insert( new BinaryNode((char)65)); // A
 		t.insert( new BinaryNode((char)71)); // G
-		t.insert( new BinaryNode((char)73)); // I
-		t.insert( new BinaryNode((char)75)); // K
 		t.insert( new BinaryNode((char)68)); // D
-		t.insert( new BinaryNode((char)76)); // L
 		t.insert( new BinaryNode((char)67)); // C
 		t.insert( new BinaryNode((char)69)); // E
+		t.insert( new BinaryNode((char)70)); // F
+		t.insert( new BinaryNode((char)74)); // J
+		t.insert( new BinaryNode((char)73)); // I
+		t.insert( new BinaryNode((char)75)); // K
+		t.insert( new BinaryNode((char)76)); // L
+		t.insert( new BinaryNode((char)78)); // N
 		t.insert( new BinaryNode((char)77)); // M
-		BinaryNode f =  new BinaryNode((char)70);
-		t.insert(f); // F
-		//t.insert( new BinaryNode((char)70)); // F
+		t.insert( new BinaryNode((char)79)); // O
+		t.insert( new BinaryNode((char)80)); // P
+		t.insert( new BinaryNode((char)85)); // U
+		t.insert( new BinaryNode((char)82)); // R
+		t.insert( new BinaryNode((char)83)); // S
+		t.insert( new BinaryNode((char)84)); // T
+		t.insert( new BinaryNode((char)86)); // V
+		t.insert( new BinaryNode((char)88)); // X
+		t.insert( new BinaryNode((char)87)); // W
+		t.insert( new BinaryNode((char)90)); // Z
+		t.insert( new BinaryNode((char)89)); // Y
+		//BinaryNode f =  new BinaryNode((char)70);
+		//t.insert(f); // F
 
 		if(null != t.root())
 			System.out.println("Created Complex Tree");

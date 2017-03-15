@@ -84,26 +84,75 @@ public class BinarySearchTree extends BinaryTree
 	public static boolean isBST(BinaryNode root) {  return isBST(root, Integer.MIN_VALUE, Integer.MAX_VALUE); }
 	private static boolean isBST(BinaryNode tree, int min, int max)
 	{
-		if(null == tree || (null == tree.left() && null == tree.right()))
-			return true;
-
-		if(null != tree.left() && tree.value() < tree.left().value())
-			return false;
-		if(null != tree.right() && tree.value() > tree.right().value())
-			return false;
+		if(null == tree) return true;
+		if(tree.value() <= min || tree.value() >= max) return false;
 
 		return isBST(tree.left(), min, tree.value()) && isBST(tree.right(), tree.value(), max);
 	}
 
-	public static boolean isBSTInorder(BinaryNode root) {  return isBSTInorder(root, Integer.MIN_VALUE); }
-	private static boolean isBSTInorder(BinaryNode tree, int min)
+	public static boolean isBstInorder(BinaryNode root) {  return isBstInorder(root, Integer.MIN_VALUE); }
+	private static boolean isBstInorder(BinaryNode tree, int prev)
 	{
-		if(null == tree || (null == tree.left() && null == tree.right()))
-			return true;
-
-		return (min <= tree.value()) && isBSTInorder(tree.left(), min) && isBSTInorder(tree.right(), tree.value());
+		if(null == tree) return true;
+		if(isBstInorder(tree.left(), prev)) {
+			if(tree.value() <= prev) return false;
+			return isBstInorder(tree.right(), tree.value());
+		}
+		return false;
 	}
 
+	public static boolean isBstRevIn(BinaryNode root) {  return isBstRevIn(root, Integer.MIN_VALUE); }
+	private static boolean isBstRevIn(BinaryNode tree, int min)
+	{
+		if(null == tree) return true;
+		if(tree.value() <= min) return false;
+
+		return isBstRevIn(tree.left(), min) && isBstRevIn(tree.right(), tree.value());
+	}
+
+	public static int ceiling(TreeNode root, int val) {
+		TreeNode node = root;
+		int ceil = Integer.MAX_VALUE;
+		while(node != null && node.val <= ceil) {
+			if(node.val == val) {
+				ceil = val;
+				break;
+			}
+			if(node.val < val) {
+				node = node.right;
+			}
+			else {
+				ceil = node.val;
+				node = node.left;
+			}
+		}
+		if(ceil == Integer.MAX_VALUE) {
+			ceil = -1;
+		}
+		return ceil;
+	}
+	public static int floor(TreeNode root, int val) {
+		TreeNode node = root;
+		int flr = Integer.MIN_VALUE;
+		while(node != null && node.val >= flr) {
+			if(node.val == val) {
+				flr = val;
+				break;
+			}
+			if(node.val > val) {
+				node = node.left;
+			}
+			else {
+				flr = node.val;
+				node = node.right;
+			}
+		}
+		if(flr == Integer.MIN_VALUE) {
+			flr = -1;
+		}
+		return flr;
+	}
+	
 	public static BinaryNode arrayToBalancedBST(char[] array)
 	{
 		return arrayToBalancedBST(array, 0, array.length-1);
@@ -414,10 +463,25 @@ public class BinarySearchTree extends BinaryTree
 		*/
 
 	}
+	private static void testbst(BinaryNode t, String tag) {
+        System.out.println("IsBST: " + tag + " " + isBST(t) + " ");
+		//System.out.println("IsBSTRevIn: " + isBstRevIn(t) + " ");
+		//System.out.println("IsBSTInOrder: " + isBstInorder(t) + " ");
+	}
 	private static void bstCreates()
 	{
-		BinaryNode root1 = BinarySearchTree.buildTreeFromInAndPre("ABJEG".toCharArray(), 0, 4, "EBAJG".toCharArray(), 0, 4);
-        System.out.println("IsBST: " + isBST(root1) + " ");
+		BinaryNode t1 = BinarySearchTree.buildFromInPre("ABEG".toCharArray(), "EBAG".toCharArray());
+		testbst(t1, "in: ABEG, pre: EBAG");
+
+		BinaryNode t2 = BinarySearchTree.buildFromInPre("ABJEG".toCharArray(), "EBAJG".toCharArray());
+		testbst(t2, "in: ABJEG, pre: EBAJG");
+
+		BinaryNode t3 = BinarySearchTree.buildFromInPre("ABECG".toCharArray(), "EBAGC".toCharArray());
+		testbst(t3, "in: ABECG, pre: EBAGC");
+
+		BinaryNode t4 = BinarySearchTree.buildFromInPre("ABJECG".toCharArray(), "EBAJGC".toCharArray());
+		testbst(t4, "in: ABJECG, pre: EBAJGC");
+
 
 		// from single linked list to Balanced BST
 		LinkedList list = LinkedList.createListFromArray(new int[] {65, 66, 67, 68, 69, 70, 71, 72, 73, 74});
@@ -483,7 +547,8 @@ public class BinarySearchTree extends BinaryTree
 	}
 	private static void bstFunctions(BinaryNode t)
 	{
-		System.out.println("IsBST: " + isBST(t) + " ");
+		testbst(t, "");
+
 		// LCA BST LCA(K,M) = K, LCA(E,F) = E, LCA(C,F) = D, LCA(A,D) = B, LCA(A,L) = H
 		System.out.println("lcaBst (K, M) : " + lcaBst(t, 'K', 'M'));
 		System.out.println("lcaBst (E, F) : " + lcaBst(t, 'E', 'F'));
@@ -493,10 +558,41 @@ public class BinarySearchTree extends BinaryTree
 		System.out.println("lcaBst (A, Z) : " + lcaBst(t, 'A', 'Z'));
 		System.out.println("lcaBst (Q, Z) : " + lcaBst(t, 'Q', 'Z'));
 	}
+	private static void testbstdata() {
+		TreeNode t = smallBst1();
+		System.out.println("ceiling 22: " + ceiling(t, 22));
+		System.out.println("ceiling 24: " + ceiling(t, 24));
+		System.out.println("ceiling 26: " + ceiling(t, 26));
+		System.out.println("ceiling 28: " + ceiling(t, 28));
+		System.out.println("ceiling 30: " + ceiling(t, 30));
+		System.out.println("ceiling 35: " + ceiling(t, 35));
+		System.out.println("ceiling 45: " + ceiling(t, 45));
+		System.out.println("ceiling 0: " + ceiling(t, 0));
+		System.out.println("ceiling 2: " + ceiling(t, 2));
+		System.out.println("ceiling 4: " + ceiling(t, 4));
+		System.out.println("ceiling 6: " + ceiling(t, 6));
+		System.out.println("ceiling 7: " + ceiling(t, 7));
+		System.out.println("ceiling 8: " + ceiling(t, 8));
+
+		System.out.println("floor 22: " + floor(t, 22));
+		System.out.println("floor 24: " + floor(t, 24));
+		System.out.println("floor 26: " + floor(t, 26));
+		System.out.println("floor 28: " + floor(t, 28));
+		System.out.println("floor 30: " + floor(t, 30));
+		System.out.println("floor 35: " + floor(t, 35));
+		System.out.println("floor 45: " + floor(t, 45));
+		System.out.println("floor 0: " + floor(t, 0));
+		System.out.println("floor 2: " + floor(t, 2));
+		System.out.println("floor 4: " + floor(t, 4));
+		System.out.println("floor 6: " + floor(t, 6));
+		System.out.println("floor 7: " + floor(t, 7));
+		System.out.println("floor 8: " + floor(t, 8));
+	}
 	public static void main(String[] args)
 	{
 		//CreateSmallTree(t);
 		BinaryNode t = complexTree();
+		testbstdata();
 		oldBinaryTreeFunctions(t);
 		bstFunctions(t);
 		bstCreates();

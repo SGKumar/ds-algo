@@ -5,6 +5,7 @@ import java.util.Stack;
 import java.lang.String;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.LinkedList;
 import java.util.TreeMap;
 import java.util.Map;
@@ -52,12 +53,13 @@ public class BinaryTree extends BinaryTreeBase
 			}
 			else {
 				BinaryNode peeknode = stack.peek();
-				if(prev != peeknode.right() && peeknode.right() != null)
-					node = peeknode.right();
-				else {
+				if(peeknode.right() == null || prev == peeknode.right()) {
 					node = stack.pop();
 					prev = node;
 					node = null;
+				}
+				else {
+					node = peeknode.right();
 				}
 			}
 		}
@@ -71,55 +73,84 @@ public class BinaryTree extends BinaryTreeBase
 
 	private static String ancestors2(BinaryNode node, char ch)
 	{
+		return anc2(node, ch).toString();
+	}
+	private static StringBuilder anc2(BinaryNode node, char ch) {
 		if(node == null) {
-			return "";
+			return new StringBuilder();
 		}
 		if(node.value() == ch) {
-			return String.valueOf(ch);
+			return new StringBuilder().append(ch).append(" ");
 		}
 
-		String s = ancestors2(node.left(), ch);
-		if("".equals(s)) {
-			s = ancestors2(node.right(), ch);
+		StringBuilder s = anc2(node.left(), ch);
+		if(s.length() == 0) {
+			s = anc2(node.right(), ch);
 		}
-		if(!"".equals(s)) {
-			return (new StringBuilder()).append(node.value()).append(" ").append(s).toString();
+		if(s.length() > 0) {
+			s.append(node.value()).append(" ");
 		}
 
-		return "";
+		return s;
 	}
 
-	public static BinaryNode buildTreeFromInAndPre(char[] in, int inBegin, int inEnd, char[] pre, int preBegin, int preEnd)
+	public static BinaryNode buildFromInPre(char[] in, char[] pre) {
+		if(in == null || pre == null || in.length == 0 || (in.length != pre.length)) return null;
+		return buildFromInPre(in, 0, in.length-1, pre, 0);
+	}
+	private static BinaryNode buildFromInPre(char[] in, int inBegin, int inEnd, char[] pre, int prePos)
 	{
-		//System.out.printf("inBegin %d inEnd %d preBegin %d preEnd %d\n", inBegin, inEnd, preBegin, preEnd);
-		//if(inBegin > inEnd || preBegin > preEnd)
-		//	return null;
+		if(inEnd < inBegin)
+			return null;
+		
+		BinaryNode node = new BinaryNode(pre[prePos]);
 
-		BinaryNode node = new BinaryNode(pre[preBegin]);
-
-		if(inBegin == inEnd || preBegin == preEnd)
-			return node;
-
-		// pre[preBegin] preOrder gives root, inOrder gives left/right of root
-		int inRoot = findInArray(in, inBegin, inEnd, pre[preBegin]);
-
-		// segregate left/right in preOrder
-		//int preRight = findInArray(pre, preBegin+1, preEnd, in[inLeft+1]);
-		int preRight = preBegin+inRoot-inBegin;
+		int inRoot = inBegin;
+		for(inRoot = inBegin; inRoot <= inEnd; inRoot++) {
+			if(in[inRoot] == pre[prePos]) 
+				break;
+		}
+		int leftSz = inRoot-inBegin;
 
 		// if inRoot is first inOrder node, left tree is null
-		if(inRoot != inBegin)
-		{
-			BinaryNode left = buildTreeFromInAndPre(in, inBegin, inRoot-1, pre, preBegin+1, preRight);
+		BinaryNode left = buildFromInPre(in, inBegin, inRoot-1, pre, prePos+1);
+		node.left(left);
+
+		// if preRight is last preOrder node, right tree is null
+		BinaryNode right = buildFromInPre(in, inRoot+1, inEnd, pre, prePos+leftSz+1);
+		node.right(right);
+
+		return node;
+	}
+	public static BinaryNode buildFromInPost(char[] in, char[] post) {
+		if(in == null || post == null || in.length == 0 || (in.length != post.length)) return null;
+		return buildFromInPost(in, 0, in.length-1, post, post.length-1);
+	}
+	public static BinaryNode buildFromInPost(char[] in, int inBegin, int inEnd, char[] post, int pEnd)
+	{
+		BinaryNode node = new BinaryNode(post[pEnd]);
+
+		int i = inBegin;
+		for(; i <= inEnd; i++) {
+			if(in[i] == post[pEnd]) 
+				break;
+		}
+		int leftSz = i-inBegin;
+
+		// if i is first inOrder node, left tree is null
+		if(i > inBegin) {
+			//BinaryNode left = buildFromInPost(in, inBegin, i-1, post, pBegin, pBegin+leftSz-1);
+			BinaryNode left = buildFromInPost(in, inBegin, i-1, post, pEnd - (inEnd - i) -1);
 			node.left(left);
 		}
 
-		// if preRight is last preOrder node, right tree is null
-		if(preRight != preEnd)
-		{
-			BinaryNode right = buildTreeFromInAndPre(in, inRoot+1, inEnd, pre, preRight+1, preEnd);
+		// if postRight is last postOrder node, right tree is null
+		if(i < inEnd) {
+			//BinaryNode right = buildFromInPost(in, i+1, inEnd, post, pBegin+leftSz, pEnd-1);
+			BinaryNode right = buildFromInPost(in, i+1, inEnd, post, pEnd-1);
 			node.right(right);
 		}
+
 		return node;
 	}
 	public BinaryNode getTreeFromPreAllFullNodes(char[] pre, int preBegin, int preEnd)
@@ -227,32 +258,29 @@ public class BinaryTree extends BinaryTreeBase
 		}
 		LevelInfo left = diaHelper(node.left());
 		LevelInfo right = diaHelper(node.right());
-		int dia = Math.max(left.depth() + right.depth(), Math.max(left.dia(), right.dia()));
+		int dia = Math.max(1 + left.depth() + right.depth(), Math.max(left.dia(), right.dia()));
 		int depth = 1 + Math.max(left.depth(), right.depth());
 		return new LevelInfo(depth, dia);
 	}
 
 	public static boolean isBalanced(BinaryNode root) {
-		return (Integer.MIN_VALUE != checkHeight(root));
+		return (-1 != checkHeight(root));
 	}
 	private static int checkHeight(BinaryNode node)
 	{
 		if(node == null) return 0;
 
-		int leftHt = checkHeight(node.left());
-		if(leftHt == Integer.MIN_VALUE) {
-			return Integer.MIN_VALUE;
+		int l = checkHeight(node.left());
+		if(l == -1) return -1;
+
+		int r = checkHeight(node.right());
+		if(r == -1) return -1;
+
+		if(Math.abs(l - r) > 1) {
+			return -1;
 		}
-		int rightHt = checkHeight(node.right());
-		if(rightHt == Integer.MIN_VALUE) {
-			return Integer.MIN_VALUE;
-		}
-		if(Math.abs(leftHt - rightHt) > 1) {
-			return Integer.MIN_VALUE;
-		}
-		else {
-			return 1 + Math.max(leftHt, rightHt);
-		}
+
+		return 1 + Math.max(l, r);
 	}
 
 	protected BinaryNode getNode(char c)
@@ -297,44 +325,129 @@ public class BinaryTree extends BinaryTreeBase
 	}
 	// CTCI Cracking the Coding Interview END ....
 	
-	// 2 trees are isomorphic if their structure is the same.
-	public boolean isomorphic(BinaryNode t1, BinaryNode t2)
+	// makeinjava.com BEGIN ....
+	// identical trees have same structure, AND data
+	public static boolean identical(BinaryNode t1, BinaryNode t2) {
+		if(t1 == null && t2 == null) return true;
+		if(t1 == null || t2 == null) return false;
+		if(t1.val != t2.val) return false;
+
+		return identical(t1.left, t2.left) && identical(t1.right, t2.right);
+	}
+	// mirror image trees have mirror structure, AND data
+	public boolean mirrorImage(TreeNode t1, TreeNode t2)
 	{
-		if(t1 == null && t2 == null) {
+		if(t1 == null && t2 == null) return true;
+		if(t1 == null || t2 == null) return false;
+		if(t1.val != t2.val) return false;
+
+		return mirrorImage(t1.left, t2.right) && mirrorImage(t1.right, t2.left);
+	}
+	// isomorphic trees have same structure, ignore data
+	public boolean isomorphic(TreeNode t1, TreeNode t2)
+	{
+		if(t1 == null && t2 == null) return true;
+		if(t1 == null || t2 == null) return false;
+		return isomorphic(t1.left, t2.left) && isomorphic(t1.right, t2.right);
+	}
+	// mirror trees have mirrored structure, ignore data
+	public boolean mirror(TreeNode t1, TreeNode t2)
+	{
+		if(t1 == null && t2 == null) return true;
+		if(t1 == null || t2 == null) return false;
+
+		return mirror(t1.left, t2.right) && mirror(t1.right, t2.left);
+	}
+	// quasi isomorphic trees can be eithered mirrored/isomorphic structure, INDEPENDENTLY at any level
+	public boolean quasiIso(TreeNode t1, TreeNode t2)
+	{
+		if(t1 == null && t2 == null) return true;
+		if(t1 == null || t2 == null) return false;
+
+		if(quasiIso(t1.left, t2.left) && quasiIso(t1.right, t2.right)) {
 			return true;
 		}
-		if((t1 == null && t2 != null) || (t1 != null && t2 == null)) {
-			return false;
-		}
-		return isomorphic(t1.left(), t2.left()) && isomorphic(t1.right(), t2.right());
+		return quasiIso(t1.left, t2.right) && quasiIso(t1.right, t2.left);
 	}
-	// bible, geek4geeks.com leetcode END
 	
-	protected static int nextPowerOf2(int in)
-	{
-		// in > 0
-		int levels = 1, nodes = in;
-		while((nodes = nodes >>> 1) > 0)
-		{
-			levels++;
+	public static List<Character> nodesFromLeaf(BinaryNode t, int k) {
+		ArrayList<Character> res = new ArrayList<>();
+		if(k >= 0) {
+			nodesFromLeaf(t, k, "", res);
 		}
-		//System.out.printf("nextPowerOf2 of %d is :%d %d\n", in, levels, 1<<levels);
-		return levels;
+		return res;
 	}
+	private static void nodesFromLeaf(BinaryNode t, int k, String path, List<Character> res) {
+		if(t.left == null && t.right == null) {
+			String p = path + t.val;
+			if(k < p.length()) {
+				res.add(p.charAt(p.length()-k-1));
+			}
+		}
+		if(t.left != null) {
+			nodesFromLeaf(t.left, k, path + t.val, res);
+		}
+		if(t.right != null) {
+			nodesFromLeaf(t.right, k, path + t.val, res);
+		}
+	}
+
+	public static ArrayList<Integer> maxSumPath(TreeNode t) {
+		if(t == null) return new ArrayList<Integer>();
+		HashMap<Integer, ArrayList<Integer>> res = new HashMap<>();
+
+		int[] path = new int[1024];
+		maxSumPath(t, path, 0, 0, res);
+		int key = res.keySet().iterator().next();
+		return res.get(key);
+	}
+	private static ArrayList<Integer> clone(int[] arr, int size) {
+		ArrayList<Integer> res = new ArrayList<>();
+		for(int i = 0; i < size; i++) {
+			res.add(arr[i]);
+		}
+		return res;
+	}
+	private static void maxSumPath(TreeNode t, int[] path, int size, int sum, HashMap<Integer, ArrayList<Integer>> res) {
+		sum += t.val;
+		path[size++] = t.val;
+		if(t.left == null && t.right == null) {
+			if(!res.isEmpty()) {
+				int key = res.keySet().iterator().next();
+				if(key >= sum)
+					return;
+				res.remove(key);
+			}
+			res.put(sum, clone(path, size));
+		}
+		if(t.left != null) {
+			maxSumPath(t.left, path, size, sum, res);
+		}
+		if(t.right != null) {
+			maxSumPath(t.right, path, size, sum, res);
+		}
+	}
+	// makeinjava.com END ....
 
 	public static void main(String[] args)
 	{
 		BinaryNode root = smallTree();
 		System.out.println("Tree is " + (isBalanced(root)?"":"NOT ") + "Balanced");
 		btCreates(root);
-		btHardQues(root);
+		btSimple(root);
+		btHard(root);
+		testnodesFromLeaf(root);
 
 		root = complexTree();
 		System.out.println("Tree is " + (isBalanced(root)?"":"NOT ") + "Balanced");
 		btCreates(root);
-		btHardQues(root);
+		btSimple(root);
+		btHard(root);
+		testnodesFromLeaf(root);
+		
+		btComplex();
 	}
-	private static void btHardQues(BinaryNode t)
+	private static void btSimple(BinaryNode t)
 	{
         // ancestors
         System.out.println("anc iter of C are\t : " + ancestors(t, 'C'));
@@ -351,7 +464,10 @@ public class BinaryTree extends BinaryTreeBase
         System.out.println("anc -rec of R are\t : " + ancestors2(t, 'R'));
 
         System.out.println("Diameter: " + diameter(t));
-
+        System.out.println("Height: " + t.height());
+	}
+	private static void btHard(BinaryNode t)
+	{
 		System.out.println("LCA (K, M) : " + lca(t, 'K', 'M'));
 		System.out.println("LCA (C, F) : " + lca(t, 'C', 'F'));
 		System.out.println("LCA (A, L) : " + lca(t, 'A', 'L'));
@@ -365,13 +481,17 @@ public class BinaryTree extends BinaryTreeBase
 
 		String in = BinaryTreeTraversals.inOrderIterWiki(t);
 		String pre = BinaryTreeTraversals.preOrderIterWiki(t);
-		BinaryNode node = buildTreeFromInAndPre(in.toCharArray(), 0, in.length()-1, pre.toCharArray(), 0, pre.length()-1);
+		BinaryNode node1 = buildFromInPre(in.toCharArray(), 0, in.length()-1, pre.toCharArray(), 0);
+		String post = BinaryTreeTraversals.postOrderIterNew(t);
+		BinaryNode node2 = buildFromInPost(in.toCharArray(), 0, in.length()-1, post.toCharArray(), post.length()-1);
 
-		String in2 = BinaryTreeTraversals.inOrderIterWiki(node);
-		String pre2 = BinaryTreeTraversals.preOrderIterWiki(node);
-		System.out.println("BuildBTWithInPre: ");
+		String in2 = BinaryTreeTraversals.inOrderIterWiki(node1);
+		String pre2 = BinaryTreeTraversals.preOrderIterWiki(node1);
+		String post2 = BinaryTreeTraversals.postOrderIterNew(node1);
+		System.out.println("Build-pre/post::" + "pre & post trees identical ? " + (identical(node1, node2)? "YES": "NO"));
 		System.out.println("  Orig in-ord : " + in + " In Order: " + (in.equals(in2)? "YES": "NO"));
 		System.out.println("  Orig pre-ord : " + pre + " Pre Order: " + (pre.equals(pre2)? "YES": "NO"));
+		System.out.println("  Orig post-ord : " + post + " Post Order: " + (post.equals(post2)? "YES": "NO"));
 
 		/*
 		BinaryNode root1 = t.BuildBTWithInPre(in, 0, in.length()-1, pre, 0);
@@ -418,5 +538,19 @@ public class BinaryTree extends BinaryTreeBase
 		System.out.println("Pre In: " + preIn + " Pre Out: " + pre4 + " " + (pre4.equals(preIn)? "YES": "NO"));
 		*/
 	}
-	
+	private static void testnodesFromLeaf(BinaryNode root) {
+		System.out.println("nodesFromLeaf 0: " + nodesFromLeaf(root, 0));
+		System.out.println("nodesFromLeaf 1: " + nodesFromLeaf(root, 1));
+		System.out.println("nodesFromLeaf 2: " + nodesFromLeaf(root, 2));
+		System.out.println("nodesFromLeaf 3: " + nodesFromLeaf(root, 3));
+		System.out.println("nodesFromLeaf 4: " + nodesFromLeaf(root, 4));
+		System.out.println("nodesFromLeaf 5: " + nodesFromLeaf(root, 5));
+		System.out.println("nodesFromLeaf 6: " + nodesFromLeaf(root, 6));
+		System.out.println("nodesFromLeaf 7: " + nodesFromLeaf(root, 7));
+		System.out.println("nodesFromLeaf 8: " + nodesFromLeaf(root, 8));
+	}
+	private static void btComplex() {
+		TreeNode root = BinaryTreeBase.smallTree4();
+		System.out.println("maxSumPath: " + maxSumPath(root));
+	}
 }

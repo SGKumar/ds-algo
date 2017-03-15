@@ -17,6 +17,191 @@ import tree.BinaryTree;
 
 public class Gainlo
 {
+	// http://blog.gainlo.co/index.php/2016/06/12/flatten-a-linked-list/
+	// FB - Flatten a Linked List
+	// Coded on Paper (PIE has solution and unflattening too) DONE
+	
+	// http://blog.gainlo.co/index.php/2016/07/06/lowest-common-ancestor/
+	// FB - Lowest Common Ancestor
+	// Solved earlier and now in paper DONE
+	
+	// http://blog.gainlo.co/index.php/2016/07/12/meeting-room-scheduling-problem/
+	// FB - Meeting Room Scheduling Problem
+	// Given a list of meeting times, checks if any of them overlaps. The follow-up question is to 
+	// return the minimum number of rooms required to accommodate all the meetings.
+	// ### TODO To-do
+	
+	// http://blog.gainlo.co/index.php/2016/07/19/3sum/
+	// FB - 3Sum
+	// determine if any 3 integers in an array sum to 0
+	// ### TODO To-do
+	public static boolean find3Sum0(int[] arr) {
+		Arrays.sort(arr);
+		for(int i = 0; i < arr.length-2; i++) {
+			int sum = 0-arr[i];
+			int left = i+1, right = arr.length-1;
+			while(left < right) {
+				if(arr[left] + arr[right] == sum) {
+					return true;
+				}
+				if(arr[left] + arr[right] > sum) {
+					right--;
+				}
+				else {
+					left++;
+				}
+			}
+		}
+		return false;
+	}
+	// find 3 integers in an array whose sum is *closest* to 0
+	public static int[] find3SumClosest0(int[] arr) {
+		Arrays.sort(arr);
+		int prevSum = Integer.MAX_VALUE, retval[] = {};
+		for(int i = 0; i < arr.length-2; i++) {
+			int left = i+1, right = arr.length-1;
+			while(left < right) {
+				int sum = arr[left] + arr[right] + arr[i];
+				if(Math.abs(sum) < prevSum) {
+					prevSum = sum;
+					retval = new int[] {arr[i], arr[left], arr[right]};
+				}
+				if(arr[left] + arr[right] == sum) {
+					break;
+				}
+				if(arr[left] + arr[right] > sum) {
+					right--;
+				}
+				else {
+					left++;
+				}
+			}
+		}
+		return retval;
+	}
+	// determine if any 3 integers in an array sum to 0. Each no. can be used multiple times
+	public static boolean find3Sum0Repeats(int[] arr) {
+		Arrays.sort(arr);
+		for(int i = 0; i < arr.length-2; i++) {
+			int sum = 0-arr[i];
+			int left = i, right = arr.length-1;
+			while(left < right) {
+				if(arr[left] + arr[right] == sum) {
+					return true;
+				}
+				if(arr[left] + arr[right] > sum) {
+					right--;
+				}
+				else {
+					left++;
+				}
+			}
+		}
+		return false;
+	}
+	// find 3 integers in an array whose sum is *closest* to 0. Each no. can be used multiple times
+	public static int[] find3SumClosest0Repeats(int[] arr) {
+		Arrays.sort(arr);
+		int prevSum = Integer.MAX_VALUE, retval[] = {};
+		for(int i = 0; i < arr.length; i++) {
+			int left = i, right = arr.length-1;
+			while(left <= right) {
+				int sum = arr[left] + arr[right] + arr[i];
+				if(Math.abs(sum) < prevSum) {
+					prevSum = sum;
+					retval = new int[] {arr[i], arr[left], arr[right]};
+				}
+				if(arr[left] + arr[right] == sum) {
+					break;
+				}
+				if(arr[left] + arr[right] > sum) {
+					right--;
+				}
+				else {
+					left++;
+				}
+			}
+		}
+		return retval;
+	}
+	public static void testfind3Sum0()
+	{
+		int[] arr = new int[] {4, 3, -1, 2, -2, 10};
+		test3Sum0(arr);
+
+		arr = new int[] {-4, 4};
+		test3Sum0(arr);
+
+		arr = new int[] {-4, 4, 5, 6, 1, -3, 9};
+		test3Sum0(arr);
+
+		arr = new int[] {4, 3, -1, 2, 5, 10};
+		test3Sum0(arr);
+
+		arr = new int[] {0, 4, 3, 1, 2, 5, 10};
+		test3Sum0(arr);
+		
+		arr = new int[] {-4, 3, -3, 4, 2, 5, 10};
+		test3Sum0(arr);
+	}
+	public static void test3Sum0(int[] arr) {
+		System.out.println("3Sum unique == 0 " + Arrays.toString(arr) + " " + find3Sum0(arr));
+		System.out.println(" uniq closest to 0 " + Arrays.toString(arr) + " " + Arrays.toString(find3SumClosest0(arr)));
+		System.out.println(" repeats    == 0 " + Arrays.toString(arr) + " " + find3Sum0Repeats(arr));
+		System.out.println("repts closest to 0 " + Arrays.toString(arr) + " " + Arrays.toString(find3SumClosest0Repeats(arr)));
+	}
+
+	// http://blog.gainlo.co/index.php/2016/10/07/facebook-interview-longest-substring-without-repeating-characters/
+	// FB - Longest Substring without repeating characters
+	// ### TODO To-do
+	public static String longest(String str)
+	{
+		int start = 0, end = 0, maxStart = 0, maxEnd = 0;
+
+		HashMap<Character, Integer> chars = new HashMap<>();
+		for(int i = 0; i < str.length(); i++) {
+			char ch = str.charAt(i);
+			if(chars.containsKey(ch)) {
+				int prevIndex = chars.get(ch);
+				// Was prevIndex part of this string ?
+				if(prevIndex >= start) {
+					if(maxEnd - maxStart < end - start) {
+						maxStart = start;
+						maxEnd = end; 
+					}
+					start = prevIndex+1;
+				}
+			}
+			chars.put(ch, i);
+			end = i;
+		}
+		if(maxEnd - maxStart < end - start) {
+			return str.substring(start, end + 1); // String quirk for substr end....
+		}
+		else {
+			return str.substring(maxStart, maxEnd + 1); // String quirk for substr end....
+		}
+		/*		
+		int maxLen = 0, max = 0, n = A.length();
+		HashMap<Character, Integer> hashMap = new HashMap<>();
+	    
+	    for (int i = 0; i < n; i++) {
+	        
+	        char c = A.charAt(i);
+	        if (hashMap.containsKey(c)) {
+	            int prevIndex = hashMap.get(c);
+	            count = Math.min(count + 1, i - prevIndex);
+	        } else {
+	            count++;
+	        }
+            hashMap.put(c, i);
+	        
+	        max = Math.max(max, count);
+	    }
+	    return max;
+		*/
+	}
+	
 	// http://blog.gainlo.co/index.php/2017/02/02/uber-interview-questions-longest-increasing-subarray/
 	// Uber - Given an array, return the length of the longest increasing subarray.
 	// also - return longest increasing subsequence...
@@ -240,162 +425,11 @@ public class Gainlo
 	// http://blog.gainlo.co/index.php/2016/11/11/uber-interview-question-weighted-random-numbers/
 	// Uber - Weighted Random Numbers
 	
-	// http://blog.gainlo.co/index.php/2016/10/07/facebook-interview-longest-substring-without-repeating-characters/
-	// FB - Longest Substring without repeating characters
-	public static String longest(String str)
-	{
-		int start = 0, end = 0, maxStart = 0, maxEnd = 0;
-
-		HashMap<Character, Integer> chars = new HashMap<>();
-		for(int i = 0; i < str.length(); i++) {
-			char ch = str.charAt(i);
-			if(chars.containsKey(ch)) {
-				int prevIndex = chars.get(ch);
-				// Was prevIndex part of this string ?
-				if(prevIndex >= start) {
-					if(maxEnd - maxStart < end - start) {
-						maxStart = start;
-						maxEnd = end; 
-					}
-					start = prevIndex+1;
-				}
-			}
-			chars.put(ch, i);
-			end = i;
-		}
-		if(maxEnd - maxStart < end - start) {
-			return str.substring(start, end + 1); // String quirk for substr end....
-		}
-		else {
-			return str.substring(maxStart, maxEnd + 1); // String quirk for substr end....
-		}
-/*		
-		int maxLen = 0, max = 0, n = A.length();
-		HashMap<Character, Integer> hashMap = new HashMap<>();
-	    
-	    for (int i = 0; i < n; i++) {
-	        
-	        char c = A.charAt(i);
-	        if (hashMap.containsKey(c)) {
-	            int prevIndex = hashMap.get(c);
-	            count = Math.min(count + 1, i - prevIndex);
-	            hashMap.put(c, i);
-	        } else {
-	            count++;
-	            hashMap.put(c, i);
-	        }
-	        
-	        max = Math.max(max, count);
-	    }
-	    return max;
-	}*/
-	}
-	
 	// http://blog.gainlo.co/index.php/2016/09/30/uber-interview-question-delimiter-matching/
 	// Uber - Delimiter Matching
 	
 	// http://blog.gainlo.co/index.php/2016/08/14/uber-interview-question-map-implementation/
 	// Uber - Map Implementation
-	
-	// http://blog.gainlo.co/index.php/2016/07/19/3sum/
-	// FB - 3Sum
-	public static boolean find3Sum0(int[] arr) {
-		Arrays.sort(arr);
-		for(int i = 0; i < arr.length-2; i++) {
-			int sum = 0-arr[i];
-			int left = i+1, right = arr.length-1;
-			while(left < right) {
-				if(arr[left] + arr[right] == sum) {
-					return true;
-				}
-				if(arr[left] + arr[right] > sum) {
-					right--;
-				}
-				else {
-					left++;
-				}
-			}
-		}
-		return false;
-	}
-	public static int[] find3SumClosest0(int[] arr) {
-		Arrays.sort(arr);
-		int prevSum = Integer.MAX_VALUE, retval[] = {};
-		for(int i = 0; i < arr.length-2; i++) {
-			int left = i+1, right = arr.length-1;
-			while(left < right) {
-				int sum = arr[left] + arr[right] + arr[i];
-				if(Math.abs(sum) < prevSum) {
-					prevSum = sum;
-					retval = new int[] {arr[i], arr[left], arr[right]};
-				}
-				if(arr[left] + arr[right] == sum) {
-					break;
-				}
-				if(arr[left] + arr[right] > sum) {
-					right--;
-				}
-				else {
-					left++;
-				}
-			}
-		}
-		return retval;
-	}
-	public static boolean find3Sum0Repeats(int[] arr) {
-		Arrays.sort(arr);
-		for(int i = 0; i < arr.length-2; i++) {
-			int sum = 0-arr[i];
-			int left = i, right = arr.length-1;
-			while(left < right) {
-				if(arr[left] + arr[right] == sum) {
-					return true;
-				}
-				if(arr[left] + arr[right] > sum) {
-					right--;
-				}
-				else {
-					left++;
-				}
-			}
-		}
-		return false;
-	}
-	public static int[] find3SumClosest0Repeats(int[] arr) {
-		Arrays.sort(arr);
-		int prevSum = Integer.MAX_VALUE, retval[] = {};
-		for(int i = 0; i < arr.length; i++) {
-			int left = i, right = arr.length-1;
-			while(left <= right) {
-				int sum = arr[left] + arr[right] + arr[i];
-				if(Math.abs(sum) < prevSum) {
-					prevSum = sum;
-					retval = new int[] {arr[i], arr[left], arr[right]};
-				}
-				if(arr[left] + arr[right] == sum) {
-					break;
-				}
-				if(arr[left] + arr[right] > sum) {
-					right--;
-				}
-				else {
-					left++;
-				}
-			}
-		}
-		return retval;
-	}
-	
-	// http://blog.gainlo.co/index.php/2016/07/12/meeting-room-scheduling-problem/
-	// FB - Meeting Room Scheduling Problem
-	
-	// http://blog.gainlo.co/index.php/2016/07/06/lowest-common-ancestor/
-	// FB - Lowest Common Ancestor
-	// Solved earlier and now in paper
-	
-	// http://blog.gainlo.co/index.php/2016/06/12/flatten-a-linked-list/
-	// FB - Flatten a Linked List
-	// Coded on Paper (PIE has solution and unflattening too)
 	
 	// http://blog.gainlo.co/index.php/2016/06/03/second-largest-element-of-a-binary-search-tree/
 	// FB - Second Largest Element of a Binary Search Tree
@@ -613,30 +647,6 @@ public class Gainlo
 		System.out.println("Group Anags of " + Arrays.toString(ss) + " is " + groupAnagrams(ss));
 	}
 
-	public static void testfind3Sum0()
-	{
-		int[] arr = new int[] {4, 3, -1, 2, -2, 10};
-		System.out.println("SumZero " + Arrays.toString(arr) + " " + find3Sum0(arr));
-		System.out.println("Closest " + Arrays.toString(arr) + " " + Arrays.toString(find3SumClosest0(arr)));
-		System.out.println("Repeats " + Arrays.toString(arr) + " " + find3Sum0Repeats(arr));
-		System.out.println("0ClosReps " + Arrays.toString(arr) + " " + Arrays.toString(find3SumClosest0Repeats(arr)));
-		arr = new int[] {-4, 4};
-		System.out.println("SumZero " + Arrays.toString(arr) + " " + find3Sum0(arr));
-		System.out.println("Closest " + Arrays.toString(arr) + " " + Arrays.toString(find3SumClosest0(arr)));
-		System.out.println("Repeats " + Arrays.toString(arr) + " " + find3Sum0Repeats(arr));
-		System.out.println("0ClosReps " + Arrays.toString(arr) + " " + Arrays.toString(find3SumClosest0Repeats(arr)));
-		arr = new int[] {-4, 4, 5, 6, 1, -3, 9};
-		System.out.println("SumZero " + Arrays.toString(arr) + " " + find3Sum0(arr));
-		System.out.println("Closest " + Arrays.toString(arr) + " " + Arrays.toString(find3SumClosest0(arr)));
-		System.out.println("Repeats " + Arrays.toString(arr) + " " + find3Sum0Repeats(arr));
-		System.out.println("0ClosReps " + Arrays.toString(arr) + " " + Arrays.toString(find3SumClosest0Repeats(arr)));
-		arr = new int[] {4, 3, -1, 2, 5, 10};
-		System.out.println("SumZero " + Arrays.toString(arr) + " " + find3Sum0(arr));
-		System.out.println("Closest " + Arrays.toString(arr) + " " + Arrays.toString(find3SumClosest0(arr)));
-		System.out.println("Repeats " + Arrays.toString(arr) + " " + find3Sum0Repeats(arr));
-		System.out.println("0ClosReps " + Arrays.toString(arr) + " " + Arrays.toString(find3SumClosest0Repeats(arr)));
-	}
-
 	// Heights of people - codevillage.wordpress.com - 02/08
 	public static class People implements Comparable<People>
 	{
@@ -783,7 +793,7 @@ public class Gainlo
 		testfind3Sum0();
 		testsubArraySum();
 		//testgroupAnagrams();
-		//testBinaryTreePaths();
+		testBinaryTreePaths();
 		testtwoSum();
 		//testmaxPoints();
 		//testparens();
