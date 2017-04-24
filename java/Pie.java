@@ -4,6 +4,8 @@ import java.util.NoSuchElementException;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.BitSet;
 
 // Programming Interviews Exposed questions
@@ -44,30 +46,46 @@ public class Pie
 	}
 	// find first nonrepeated character in a string.
 	// first nonrepeated character in "total" is 'o', in "teeter" is 'r'.
-	public static String firstNonRepeated(String str)
+	public static char firstUnique(String str)
 	{
-		HashMap<Integer, Object> charMap = new HashMap<>();
+		HashMap<Character, Object> charMap = new HashMap<>();
 		Object seen, once = new Object(), many = new Object();
-		for(int i = 0; i < str.length();) {
-			int ch = str.codePointAt(i);
-			i += Character.charCount(ch);
-			
-			seen = charMap.get(ch);
-			if(seen == null) {
-				charMap.put(ch, once);
-			}
-			else if(seen == once) {
-				charMap.put(ch, many);
-			}
+		for(int i = 0; i < str.length(); i++) {
+			char ch = str.charAt(i);
+			charMap.put(ch, charMap.containsKey(ch)?many:once);
 		}
-		for(int i = 0; i < str.length();) {
-			int ch = str.codePointAt(i);
-			i += Character.charCount(ch);
+		for(int i = 0; i < str.length(); i++) {
+			char ch = str.charAt(i);
 			if(once == charMap.get(ch)) {
-				return new String(Character.toChars(ch));
+				return ch;
 			}
 		}
-		return null;
+		return 0;
+	}
+	public static char firstUniq2(String str)
+	{
+		HashSet<Character> repeats = new HashSet<>();
+		LinkedHashSet<Character> orig = new LinkedHashSet<>();
+		for(int i = 0; i < str.length(); i++) {
+			char ch = str.charAt(i);
+			if(!repeats.contains(ch)) {
+				if(orig.contains(ch)) {
+					orig.remove(ch);
+					repeats.add(ch);
+				}
+				else {
+					orig.add(ch);
+				}
+			}
+		}
+		return (orig.size() == 0)?0:orig.iterator().next();
+	}
+	private static void testfirstUnique() {
+		System.out.printf("first non-repeat of total is %c %c\n", firstUnique("total"), firstUniq2("total"));
+		System.out.printf("first non-repeat of beater is %c %c\n", firstUnique("beater"), firstUniq2("beater"));
+		System.out.printf("first non-repeat of bagabaggabagabagga is %c %c\n", firstUnique("bagabaggabagabagga"), firstUniq2("bagabaggabagabagga"));
+		System.out.printf("first non-repeat of moongilile paattisaikkum is %c %c\n", firstUnique("moongilile paattisaikkum"), firstUniq2("moongilile paattisaikkum"));
+		System.out.printf("first non-repeat of abcbdbdebab is %c %c\n", firstUnique("abcbdbdebab"), firstUniq2("abcbdbdebab"));
 	}
 	// delete specified chars from ASCII string
 	public static String removeChars(String str, String remove)
@@ -189,7 +207,8 @@ public class Pie
 		return sb.toString();
 	}
 	
-	private int numOnesInBinary(int n)
+	// Ch.13 Graphics & Bit Manipulation -> BEGIN 
+	private static int numOnesInBinary(int n)
 	{
 		int numOnes = 0;
 		while(n != 0) {
@@ -200,6 +219,25 @@ public class Pie
 		}
 		return numOnes;
 	}
+	private static int onesIn2ary(int n)
+	{
+		int numOnes = 0;
+		while(n != 0) {
+			numOnes++;
+			n &= (n - 1);
+		}
+		return numOnes;
+	}
+	private static void testnumOnesInBinary() {
+		System.out.printf("numOnesInBinary of :\n");
+		System.out.printf("  %d old: %d new: %d\n", 7, numOnesInBinary(7), onesIn2ary(7));
+		System.out.printf("  %d old: %d new: %d\n", 7, numOnesInBinary(7), onesIn2ary(7));
+		System.out.printf("  %d old: %d new: %d\n", -5, numOnesInBinary(-5), onesIn2ary(-5));
+		System.out.printf("  %d old: %d new: %d\n", 0, numOnesInBinary(0), onesIn2ary(0));
+		System.out.printf("  %d old: %d new: %d\n", 31, numOnesInBinary(31), onesIn2ary(31));
+		System.out.printf("  %d old: %d new: %d\n", 47, numOnesInBinary(47), onesIn2ary(47));
+	}
+	// Ch.13 Graphics & Bit Manipulation -> END
 
 	// Assume 7 digit phone number is given with each number 0-9
 	public void getPhoneNumWords(int[] phNum)
@@ -264,7 +302,8 @@ public class Pie
 
 	public static void main(String[] args)
 	{
-		System.out.println("Battle of the Vowels: Hawaii vs. Grozny - aeiou = " + removeChars("Battle of the Vowels: Hawaii vs. Grozny", "aeiou "));
+		testfirstUnique();
+		System.out.println("Battle of the Vowels: Hawaii vs. Grozny - aeiou = " + removeChars("Battle of the Vowels: Hawaii vs. Grozny", "aeiou"));
 		System.out.println("Reverse of [Do or do not, there is no try.] is " + reverseWords("Do or do not, there is no try."));
 	
 		System.out.println("strToInt of -1567 is " + strToInt("-1567"));
@@ -281,12 +320,8 @@ public class Pie
 		System.out.println("Combos of hat: " + s.combos("hat"));
 		System.out.println("Combos of blake: " + s.combos("blake"));
 		System.out.println("Combos of abcd: " + s.combos("abcd"));
-		System.out.println("numOnesInBinary of 7: " + s.numOnesInBinary(7));
-		System.out.println("numOnesInBinary of -5: " + s.numOnesInBinary(-5));
-		System.out.println("numOnesInBinary of 0: " + s.numOnesInBinary(0));
-		System.out.println("numOnesInBinary of 31: " + s.numOnesInBinary(31));
-		System.out.println("numOnesInBinary of 47: " + s.numOnesInBinary(47));
 
+		testnumOnesInBinary();
 		s.getPhoneNumWords(new int[]{7, 3, 1});
 		System.out.println("Ph num words: " + s.sb.toString());
 		

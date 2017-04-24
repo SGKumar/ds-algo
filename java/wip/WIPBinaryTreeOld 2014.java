@@ -327,46 +327,6 @@ public class BinaryTreeOld extends BinaryTreeBase
 		return str.toString();
 	}
 
-	public String LevelOSZigZagIterOld()
-	{
-		if(null == root) return "";
-		MyQueue queue = new MyQueue();
-		StringBuilder str = new StringBuilder();
-		boolean r2l = true;
-
-		MyBinaryNode node = root;
-		queue.Enque(node);
-		queue.Enque(null);
-		while(!queue.IsEmpty())
-		{
-			node = queue.Deque();
-			if(null == node)
-			{
-				r2l = !r2l;
-				if(!queue.IsEmpty())
-					queue.Enque(null);
-				continue;
-			}
-			str.append(node.Element());
-
-			if(r2l)
-			{
-				if(node.Right() != null)
-					queue.Enque(node.Right());
-				if(node.Left() != null)
-					queue.Enque(node.Left());
-			}
-			else
-			{
-				if(node.Left() != null)
-					queue.Enque(node.Left());
-				if(node.Right() != null)
-					queue.Enque(node.Right());
-			}
-		}
-		return str.toString();
-	}
-
 
 	public void SetGPRec(MyBinaryNode node, MyBinaryNode parent)
 	{

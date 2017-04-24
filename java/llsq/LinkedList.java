@@ -3,6 +3,7 @@ package llsq;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Stack;
+//import java.util.ArrayDeque;
 
 public class LinkedList
 {
@@ -116,7 +117,6 @@ public class LinkedList
 		}
 		return list;
 	}
-
 	public void appendArrayToList(int[] vals)
 	{
 		for(int val : vals) {
@@ -124,6 +124,45 @@ public class LinkedList
 		}
 	}
 
+	public static ListNode create2DList(int[] vals) {
+		if(vals == null || vals.length < 2 || vals[0] != vals.length-1) return null;
+		
+		Queue<ListNode> q = new Queue<ListNode>();
+		ListNode first = new ListNode(vals[1]);
+		q.add(first);
+		int i = 2;
+		while(i <= vals[0] && !q.isEmpty()) {
+			ListNode node = q.remove();
+			if(vals[i] != -1) {
+				node.child = new ListNode(vals[i]);
+				q.add(node.child);
+			}
+			i++;
+			if(i == vals.length)
+				break;
+			if(vals[i] != -1) {
+				node.next = new ListNode(vals[i]);
+				q.add(node.next);
+			}
+			i++;
+		}
+		if(null != first) {
+			//System.out.println("Generated Tree from array " + Arrays.toString(vals));
+			//root.prettyPrint();
+		}
+		return first;
+	}
+	public static ListNode small2DList1() {
+		int[] vals = new int[] {19, 1, -1, 2, 5, 3, 8, 6, -1, 4, -1, -1, -1, -1, 7, -1, 9, -1, -1, -1};
+		return create2DList(vals);
+		
+	}
+	public static ListNode small2DList2() {
+		int[] vals = new int[] {19, 1, 2, -1, 5, 3, 8, 6, -1, 4, -1, -1, -1, -1, 7, -1, 9, -1, -1, -1};
+		return create2DList(vals);
+	}
+
+	
 	public static LinkedList createSortedList()
 	{
 		return LinkedList.createSortedList(10);
@@ -292,30 +331,31 @@ public class LinkedList
 		tail = end;
 	}
 
-	public static ListNode sumList(LinkedList l1, LinkedList l2)
-	{
-		ListNode n1 = l1.head();
-		ListNode n2 = l2.head();
-		ListNode sumHead = null, sumNode = null, lastSumNode = null;
+	public static ListNode sumList(LinkedList l1, LinkedList l2) {
+		return sumList(l1.head(), l2.head());
+	}
+	private static ListNode sumList(ListNode n1, ListNode n2) {
+		ListNode sumHead = null, sumNode = null, sumTail = null;
 		int carry = 0;
 		
 		while(n1 != null || n2 != null) {
-			int sum = ((n1 == null)? 0:n1.value()) +
-					((n2 == null)?0:n2.value()) + carry;
+			int sum = ((n1 == null)? 0:n1.value()) + carry;
+			sum += (n2 == null)?0:n2.value();
+
 			sumNode = new ListNode(sum%10);
 			carry = sum/10;
 			if(sumHead == null) {
 				sumHead = sumNode;
 			}
-			if(lastSumNode != null) {
-				lastSumNode.next(sumNode);
+			else {
+				sumTail.next(sumNode);
 			}
-			lastSumNode = sumNode;
+			sumTail = sumNode;
 			n1 = (n1 != null)? n1.next():null;
 			n2 = (n2 != null)? n2.next():null;
 		}
 		if(carry > 0) {
-			lastSumNode.next(new ListNode(carry));
+			sumTail.next(new ListNode(carry));
 		}
 		return sumHead;
 	}
@@ -329,18 +369,32 @@ public class LinkedList
 			return ((carry > 0)? new ListNode(carry):null);
 		}
 
-		int sum = ((n1 == null)? 0:n1.value()) +
-					((n2 == null)?0:n2.value()) + carry;
+		int sum = ((n1 == null)? 0:n1.value()) + carry;
+		sum += (n2 == null)?0:n2.value();
 		ListNode sumNode = new ListNode(sum%10);
 
 		carry = sum/10;
 		n1 = (n1 != null)? n1.next():null;
 		n2 = (n2 != null)? n2.next():null;
-		ListNode sumNext = sumListRec(n1, n2, carry);
-		sumNode.next(sumNext);
+
+		ListNode sumTail = sumListRec(n1, n2, carry);
+		sumNode.next(sumTail);
 		return sumNode;
 	}
 
+	public static ListNode sumRevList(LinkedList list1, LinkedList list2)
+	{
+		list1.reverse();
+		System.out.println("sumRevList rev #1: " + LinkedList.toStringSimple(list1.head()));
+		list2.reverse();
+		System.out.println("sumRevList rev #2: " + LinkedList.toStringSimple(list2.head()));
+		ListNode ret = sumList(list1, list2);
+		
+		//list1.reverse(1);
+		//list2.reverse(1);
+		return ret;
+	}
+	
 	public static ListNode sumRevListRec(LinkedList list1, LinkedList list2)
 	{
 		return sumRevListRec(list1.head(), list2.head());
@@ -356,7 +410,16 @@ public class LinkedList
 		else {
 			result = sumRevListRec(n2, n1, len2-len1);
 		}
-		return result.node();
+		
+		ListNode first = null;
+		if(result.carry() > 0) {
+			first = new ListNode(result.carry());
+			first.next = result.node();
+		}
+		else {
+			first = result.node();
+		}
+		return first;
 	}
 	private static ListAddResult sumRevListRec(ListNode n1, ListNode n2, int lenDiff)
 	{
@@ -514,6 +577,17 @@ public class LinkedList
 	// END Cracking the Coding Interview  -->
 
 	// BEGIN Amazon Bible, GeekforGeeks, leetcode  -->
+	public void reverse() {
+		if(head == null) return;
+		ListNode n = head, prev = null;
+		while(n != null) {
+			ListNode next = n.next();
+			n.next(prev);
+			prev = n;
+			n = next;
+		}
+		head = prev;
+	}
 	public void reverse(int k)
 	{
 		if(head == null) return;
@@ -624,37 +698,60 @@ public class LinkedList
 			curr2 = curr2.next();
 		}
 
-		while(true)
-		{
+		while(curr1 != null || curr2 != null) {
 			// End of list1
-			if(curr1 == null)
-			{
+			if(curr1 == null) {
 				curr.next(curr2);
 				break;
 			}
 			// End of list2
-			if(curr2 == null)
-			{
+			if(curr2 == null) {
 				curr.next(curr1);
 				break;
 			}
-			if(curr1.value() < curr2.value())
-			{
+			if(curr1.value() < curr2.value()) {
 				curr.next(curr1);
 				curr = curr1;
 				curr1 = curr1.next();
 			}
-			else
-			{
+			else {
 				curr.next(curr2);
 				curr = curr2;
 				curr2 = curr2.next();
 			}
-
 		}
 		return head;
 	}
 
+	public static ListNode mergeSort(ListNode first) {
+		int length = length(first);
+		return mergeSort(first, length);
+	}
+	private static ListNode mergeSort(ListNode first, int len) {
+		if(len == 1) return first;
+		if(len == 2) {
+			ListNode temp = first.next();
+			if(first.value() <= temp.value()) return first;
+
+			first.next(temp.next());
+			temp.next(first);
+			return temp;
+		}
+		
+		int mid = len/2;
+		ListNode temp = first;
+		for(int i = 1; i < mid; i++) {
+			temp = temp.next();
+		}
+		ListNode n1 = temp;
+		ListNode n2 = temp.next();
+		temp.next(null);
+		temp = n2;
+		n1 = mergeSort(first, mid);
+		n2 = mergeSort(temp, len - mid);
+		return merge(n1, n2);
+	}
+	
 	public void RevIter()
 	{
 		head = RevIter(head);
@@ -825,6 +922,21 @@ public class LinkedList
     	{
     		str.append(iter.value() + "->");
     	}
+    	return str.toString();
+    }
+    public static String toStringChild(ListNode list)
+    {
+		Queue<ListNode> q = new Queue<>();
+    	StringBuilder str = new StringBuilder("");
+		q.add(list);
+		while(!q.isEmpty()) {
+			ListNode n = q.remove();
+			str = str.append(String.format("[%s,%s,%s]", n.val, (n.child !=null)?n.child.val:"", (n.next != null)?n.next.val:""));
+			if(n.child != null)
+				q.add(n.child);
+			if(n.next != null)
+				q.add(n.next);
+		}
     	return str.toString();
     }
     public static String toString(ListNode list)
@@ -1025,6 +1137,35 @@ public class LinkedList
 		
 		return head;
 	}
+	
+	public static ListNode ins_sort(ListNode first) {
+		if(first == null || first.next() == null) return first;
+
+		ListNode ret = first, prev = first;
+		for(ListNode m = first.next(); m != null; m = m.next()) {
+			if(m.value() >= prev.value()) {
+				prev = m;
+				continue;
+			}
+
+			prev.next = m.next;
+
+			if(m.val < ret.val) {
+				m.next = ret;
+				ret = m;
+			}
+			else {
+				ListNode t = ret;
+				while(t.next().value() < m.value()) {
+					t = t.next();
+				}
+				m.next = t.next;
+				t.next = m;
+			}
+			m = prev;
+		}
+		return ret;
+	}
 
 	public boolean isListEven()
 	{
@@ -1037,10 +1178,11 @@ public class LinkedList
 	
     public static void main(String args[])
     {
-		oldFunctions();
-		CTCIFunctions();
-		palindromeFunctions();
-		moreProbs();
+		//oldFunctions();
+		//CTCIFunctions();
+		//palindromeFunctions();
+		sortProbs();
+		//moreProbs();
 	}
 	private static void oldFunctions()
 	{
@@ -1079,16 +1221,48 @@ public class LinkedList
     	System.out.println("LL7 Cloned No Mods:\t\t" + ll9.toString());
 		LinkedList ll91 = LinkedList.cloneRandomListNoModsNew(ll7);
     	System.out.println("LL7 Cloned No Mods new:\t\t" + ll91.toString());
-		
+	}
+	private static void sortProbs() {
 		System.out.println("Q14SortLinkedList");
 		LinkedList ll10 = LinkedList.createListFromArray(new int[]{3, 5, 8, 5, 9, 10, 2, 20, 1, 7, 6, 4, 15, 18, 19, 14, 13, 11});
-		System.out.println("Before sort: " + ll10.toString());
+		System.out.println("Before sort: " + LinkedList.toStringSimple(ll10.head()));
 		ll10.q14sortLinkedList();
 		System.out.println("After sort: " + ll10.toString());
+
+		System.out.println("ins_sort");
+		LinkedList lst = LinkedList.createListFromArray(new int[]{3, 5, 8, 5, 9, 10, 2, 20, 1, 7, 6, 4, 15, 18, 19, 14, 13, 11});
+		//LinkedList lst = LinkedList.createListFromArray(new int[]{3, 5, 2, 1, 4, 7, 6});
+		System.out.println("Before sort: " + LinkedList.toStringSimple(lst.head()));
+		ListNode hd = ins_sort(lst.head());
+		System.out.println("insert sort: " + LinkedList.toStringSimple(hd));
+
+		LinkedList lst2 = LinkedList.createListFromArray(new int[]{3, 5, 8, 5, 9, 10, 2, 20, 1, 7, 6, 4, 15, 18, 19, 14, 13, 11});
+		//LinkedList lst2 = LinkedList.createListFromArray(new int[]{3, 5, 2, 1, 4, 7, 6});
+		ListNode hd2 = mergeSort(lst2.head());
+		System.out.println("merge  sort: " + LinkedList.toStringSimple(hd2));
+		
+		lst = LinkedList.createListFromArray(new int[]{1, 1, 2, 2, 1, 2});
+		System.out.println("Before sort: " + LinkedList.toStringSimple(lst.head()));
+		hd = ins_sort(lst.head());
+		System.out.println("insert sort: " + LinkedList.toStringSimple(hd));
+		lst = LinkedList.createListFromArray(new int[]{1, 1, 2, 2, 1, 2});
+		hd = mergeSort(lst.head());
+		System.out.println("merge  sort: " + LinkedList.toStringSimple(hd));
+
+		lst = LinkedList.createListFromArray(new int[]{0, 1, 0, 1, 2, 1, 2});
+		System.out.println("Before sort: " + LinkedList.toStringSimple(lst.head()));
+		hd = ins_sort(lst.head());
+		System.out.println("insert sort: " + LinkedList.toStringSimple(hd));
+		lst = LinkedList.createListFromArray(new int[]{0, 1, 0, 1, 2, 1, 2});
+		hd = mergeSort(lst.head());
+		System.out.println("merge  sort: " + LinkedList.toStringSimple(hd));
 	}
 	private static void moreProbs()
 	{
 		LinkedList list1 = createListFromArray(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+		list1.reverse(1);
+		System.out.println("reverse 1: " + LinkedList.toStringSimple(list1.head()));
+
 		list1.reverse(10);
 		System.out.println("reverse 10: " + LinkedList.toStringSimple(list1.head()));
 
@@ -1156,6 +1330,15 @@ public class LinkedList
 		n1 = sumRevListRec(LinkedList.createListFromArray(new int[]{6, 1, 7}), 
 								LinkedList.createListFromArray(new int[]{2, 9, 5, 8}));
 		System.out.println("sumrev list is " + toString(n1));
+
+		
+		LinkedList lst1 = LinkedList.createListFromArray(new int[]{7, 3, 6});
+		LinkedList lst2 = LinkedList.createListFromArray(new int[]{9, 8, 4, 8});
+		n1 = sumRevListRec(lst1, lst2);
+		System.out.println("sumrev list is " + toStringSimple(n1));
+
+		n1 = sumRevList(lst1, lst2);
+		System.out.println("sumrev iter is " + toStringSimple(n1));
 		
 		LinkedList l4 = LinkedList.createCycleList();
 		n1 = l4.hasLoop(true);

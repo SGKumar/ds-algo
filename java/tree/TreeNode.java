@@ -19,17 +19,21 @@ public class TreeNode //implements Comparable<BinaryNode>
 	public TreeNode left, right, next;         // left child
 
     // Constructors
-    TreeNode(int value)
+    public TreeNode(int value)
     {
         val = value;
         left = right = null;
     }
 	
-	public String toStringFlat()
+	public String toStringFlat() {
+		return this.val+"";
+	}
+	@Override
+	public String toString()
 	{
-		StringBuilder str = new StringBuilder().append("[").append(val).append(",");
+		StringBuilder str = new StringBuilder().append("(").append(val).append(",");
 		str.append((left==null)?" ":left.val).append(",");
-		str.append((right==null)?" ":right.val).append(",");
+		str.append((right==null)?" ":right.val).append(")");
 		return str.toString();
 	}
 	
@@ -121,9 +125,5 @@ public class TreeNode //implements Comparable<BinaryNode>
 	{
 		if (root == null) return 0;
 		return Math.max(height(root.left), height(root.right))+1;
-	}
-	@Override
-	public String toString() {
-		return this.val+"";
 	}
 }

@@ -17,42 +17,66 @@ import java.util.BitSet;
 // Harry He Book filler till I find the right chapter Ch.03 Data Structures questions
 public class Slide
 {
-	// Find max in sliding window of size k (< N)
-	public static int[] maxInSlidingWindow(int[] arr, int k)
-	{
-		ArrayDeque<Integer> dq = new ArrayDeque<>();
-		int[] maxs = new int[arr.length - k+1];
-		for(int i = 0; i < k-1; i++) {
-			addToWin(dq, arr, i, k);
-		}
-		for(int i = k-1; i < arr.length; i++) {
-			addToWin(dq, arr, i, k);
-			maxs[i-k+1] = arr[dq.getFirst()];
-		}
-		return maxs;
+	// TODO 3.11 regular expression to match pattern with string
+	/*
+	boolean match(String s, String pattern) {
+		if(s == null || pattern == null) return false;
+		return matchCore(string, pattern);
 	}
-	private static void addToWin(Deque<Integer> dq, int[] arr, int i, int k)
-	{
-		if(!dq.isEmpty() && i - dq.getFirst() > k) {
-			dq.removeFirst();
-		}
-		while(!dq.isEmpty() && arr[dq.getLast()] <= arr[i]) {
-			dq.removeLast();
-		}
-		dq.addLast(i);
-	}
+	boolean matchCore(String string, String pattern) {
+		if(string == "" && pattern == "") return true;
+		if(string != "" && pattern == "") return false;
 
-	private static void testmaxInSlidingWindow()
+		if(pattern.charAt(1) == '*') {
+			if(pattern.charAt(0) == string.charAt(0) || (pattern.charAt(0) == '.' && *string != '\0'))
+// move on the next state
+return matchCore(string + 1, pattern + 2)
+// stay on the current state
+|| matchCore(string + 1, pattern)
+// ignore a '*'
+|| matchCore(string, pattern + 2);
+else
+// ignore a '*'
+return matchCore(string, pattern + 2);
+}
+if(*string == *pattern || (*pattern == '.' && *string != '\0'))
+return matchCore(string + 1, pattern + 1);
+return false;
+}
+*/	
+	
+	public static String paren(int n) {
+		StringBuilder sb = new StringBuilder(128);
+		char [] s = new char[2*n];
+		paren(s, 0, n, n, sb);
+		return sb.toString();
+	}
+	private static void paren(char[] s, int at, int op, int cl, StringBuilder sb) {
+		if(op == 0 && cl == 0) {
+			sb.append(s).append(" ");
+			return;
+		}
+		if(op > 0) {
+			s[at] = '(';
+			paren(s, at+1, op-1, cl, sb);
+		}
+		if(cl > op) {
+			s[at] = ')';
+			paren(s, at+1, op, cl-1, sb);
+		}
+	}
+	private static void testparen()
 	{
-		int[] arr = new int[] {1, 3, -1, -3, 5, 3, 6, 7};
-		System.out.println("max 3: " + Arrays.toString(arr) + " " + Arrays.toString(maxInSlidingWindow(arr, 3)));
-		arr = new int[] {1, 2, 3, 5, 3, 1, 6};
-		System.out.println("max 3: " + Arrays.toString(arr) + " " + Arrays.toString(maxInSlidingWindow(arr, 3)));
+		System.out.println("1 "  + paren(1));
+		System.out.println("2 "  + paren(2));
+		System.out.println("3 "  + paren(3));
+		System.out.println("4 "  + paren(4));
+		System.out.println("5 "  + paren(5));
 	}
 
 	public static void main(String[] args)
 	{
-		testmaxInSlidingWindow();
+		testparen();
 	}
 	
 	class TreeNode {

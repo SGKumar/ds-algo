@@ -85,29 +85,21 @@ public class BinarySearchTree extends BinaryTree
 	private static boolean isBST(BinaryNode tree, int min, int max)
 	{
 		if(null == tree) return true;
-		if(tree.value() <= min || tree.value() >= max) return false;
+		if(tree.value() < min || tree.value() > max) return false;
 
 		return isBST(tree.left(), min, tree.value()) && isBST(tree.right(), tree.value(), max);
 	}
 
-	public static boolean isBstInorder(BinaryNode root) {  return isBstInorder(root, Integer.MIN_VALUE); }
-	private static boolean isBstInorder(BinaryNode tree, int prev)
-	{
-		if(null == tree) return true;
-		if(isBstInorder(tree.left(), prev)) {
-			if(tree.value() <= prev) return false;
-			return isBstInorder(tree.right(), tree.value());
-		}
-		return false;
-	}
+	private static BinaryNode prev;
+	public static boolean isBstInorder(BinaryNode tree) {
+		if(tree == null) return true;
+		if(!isBstInorder(tree.left())) return false;
 
-	public static boolean isBstRevIn(BinaryNode root) {  return isBstRevIn(root, Integer.MIN_VALUE); }
-	private static boolean isBstRevIn(BinaryNode tree, int min)
-	{
-		if(null == tree) return true;
-		if(tree.value() <= min) return false;
+		//System.out.println("tree: " + tree.value() + " prev " + ((prev==null)?null:prev.value()));
+		if(prev != null && tree.value() <= prev.value()) return false;
+		prev = tree;
 
-		return isBstRevIn(tree.left(), min) && isBstRevIn(tree.right(), tree.value());
+		return isBstInorder(tree.right());
 	}
 
 	public static int ceiling(TreeNode root, int val) {
@@ -465,8 +457,8 @@ public class BinarySearchTree extends BinaryTree
 	}
 	private static void testbst(BinaryNode t, String tag) {
         System.out.println("IsBST: " + tag + " " + isBST(t) + " ");
-		//System.out.println("IsBSTRevIn: " + isBstRevIn(t) + " ");
-		//System.out.println("IsBSTInOrder: " + isBstInorder(t) + " ");
+		prev = null;
+		System.out.println("IsBSTInOrder: " + isBstInorder(t) + " ");
 	}
 	private static void bstCreates()
 	{

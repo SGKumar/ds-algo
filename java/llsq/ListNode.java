@@ -12,11 +12,13 @@ public class ListNode
 {
     // Friendly data; accessible by other package routines
 	//private final char nodeValue;
-	private int val;
+	public int val;
 	public int value() { return val; }
 	public void value(int val) { this.val = val; }
 
-	private ListNode next, prev, random;
+	public ListNode next, prev;
+	public ListNode random;
+	public ListNode child;
 
 	public void next(ListNode next) { this.next = next; }
 	public ListNode next() { return next; }
@@ -24,8 +26,8 @@ public class ListNode
 	public void prev(ListNode prev) { this.prev = prev; }
 	public ListNode prev() { return prev; }
 
-	void random(ListNode random) { this.random = random; }
-	ListNode random() { return random; }
+	public void random(ListNode random) { this.random = random; }
+	public ListNode random() { return random; }
 
     // Constructors
     public ListNode(int value)
@@ -33,6 +35,7 @@ public class ListNode
         this.val = value;
         next = null;
         prev = null;
+		child = null;
     }
 
     public ListNode(ListNode node)
@@ -66,6 +69,7 @@ public class ListNode
 	{
 		StringBuilder str = new StringBuilder(16);
 		str.append('[').append(val).append(',');
+		str.append((child == null)?' ':child.value()).append(',');
 		str.append((prev == null)?' ':prev.value()).append(',');
 		str.append((next == null)?' ':next.value()).append(']');
 

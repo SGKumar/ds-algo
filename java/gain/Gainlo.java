@@ -14,12 +14,139 @@ import java.lang.Math;
 import llsq.Queue;
 import tree.BinaryNode;
 import tree.BinaryTree;
+import llsq.LinkedList;
+import llsq.ListNode;
 
 public class Gainlo
 {
+	// http://blog.gainlo.co/index.php/2016/04/12/find-the-longest-substring-with-k-unique-characters/
+	// FB - Find the longest Substring with k unique characters
+
+	// http://blog.gainlo.co/index.php/2016/04/15/print-all-paths-of-a-binary-tree/
+	// FB - Print all Paths of a Binary Tree
+	// Done in paper Verified in interviewbit.
+
+	// http://blog.gainlo.co/index.php/2016/04/08/if-a-string-contains-an-anagram-of-another-string/
+	// Uber - If a String contains an anagram of another String
+	
+	// http://blog.gainlo.co/index.php/2016/04/26/deepest-node-in-a-tree/
+	// Uber - Deepest Node in a tree/
+	// Last node in a level order search
+
+	// http://blog.gainlo.co/index.php/2016/04/29/minimum-number-of-deletions-of-a-string/
+	// FB - Minimum Number of Deletions of a String
+	// Since it is just deletions we know the String has to be "in order"
+	// Make all possible combinations of string (2^N for string of length N), check starting from the longest
+	// if any of them is present in the dictionary.
+		
+	// http://blog.gainlo.co/index.php/2016/05/06/group-anagrams/
+	// FB, Uber - Group Anagrams
+	public static Comparator<String> StringComparator = new Comparator<String>()
+	{
+		public int compare(String s1, String s2)
+		{
+			return sortString(s1).compareTo(sortString(s2));
+		}
+	};
+	private static String sortString(String s)
+	{
+		char[] cs = s.toCharArray();
+		Arrays.sort(cs);
+		return new String(cs);
+	}
+	public static String groupAnagrams(String[] strs)
+	{
+		HashMap<String, ArrayList<String>> strMap = new HashMap<>();
+		for(String str : strs) {
+			String s = sortString(str);
+			if(!strMap.containsKey(s)) {
+				strMap.put(s, new ArrayList<String>());
+			}
+			strMap.get(s).add(str);
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		for(Map.Entry<String, ArrayList<String>> entry : strMap.entrySet()) {
+			sb.append(entry.getValue().toString());
+		}
+		return sb.toString();
+	}
+	
+	// http://blog.gainlo.co/index.php/2016/05/10/duplicate-elements-of-an-array/
+	// FB - Duplicate Elements of an Array
+	// Simple descriptive problem about external merge sort and pivot... (like qsort)
+	
+	// http://blog.gainlo.co/index.php/2016/06/01/subarray-with-given-sum/
+	// FB - Subarray with Given Sum
+	// Given an array of non-negative numbers, find continuous subarray with sum to S.
+	public static int[] subArraySum(int arr[], int val)
+	{
+		if(arr == null || val < 0 || arr.length == 0) return new int[] {};
+
+		int left = 0, right = 0, len = arr.length, sum = arr[0];
+		while(left <= right && right < len) {
+			if(sum == val) {
+				return new int[] {left, right};
+			}
+			if(sum < val) {
+				right++;
+				if(right < len) sum += arr[right];
+			}
+			else {
+				if(left < len) sum -= arr[left];
+				left++;
+			}
+		}
+		return new int[] {};
+	}
+	// Follow-up, Given an array of numbers, find subarray with sum to S. DP problem there already
+	
+	// http://blog.gainlo.co/index.php/2016/06/03/second-largest-element-of-a-binary-search-tree/
+	// FB - Second Largest Element of a Binary Search Tree
+	// Coded a reverse inorder tranversal - get items in descending order choose 2nd.
+	
 	// http://blog.gainlo.co/index.php/2016/06/12/flatten-a-linked-list/
 	// FB - Flatten a Linked List
-	// Coded on Paper (PIE has solution and unflattening too) DONE
+	// Coded on Paper (PIE has solution and unflattening too)
+	public static ListNode flatten(ListNode node)  {
+		ListNode slow = node, fast = node;
+		while(slow.child != null || fast.next != null) {
+			while(slow.next != null && slow.child == null) {
+				slow = slow.next;
+			}
+			while(fast.next != null) {
+				fast = fast.next;
+			}
+			if(slow.child != null) {
+				fast.next = slow.child;
+				slow = slow.next;
+			}
+		}
+		return node;
+	}
+	public static ListNode flatten2(ListNode node)  {
+		ListNode n = node, tail = node;
+		while(n != null) {
+			while(tail.next != null) {
+				tail = tail.next;
+			}
+			if(n.child != null) {
+				tail.next = n.child;
+				n = n.next;
+			}
+		}
+		return node;
+	}
+	private static void testflatten() {
+		ListNode fst = LinkedList.small2DList1();
+		System.out.println("List: " + LinkedList.toStringSimple(fst) + " " + LinkedList.toStringChild(fst));
+		System.out.println("  After flatten: " + LinkedList.toStringSimple(flatten(fst)));
+		System.out.println("  After flaten2: " + LinkedList.toStringSimple(flatten(LinkedList.small2DList1())));
+		fst = LinkedList.small2DList2();
+		System.out.println("List: " + LinkedList.toStringSimple(fst) + " " + LinkedList.toStringChild(fst));
+		System.out.println("  After flatten: " + LinkedList.toStringSimple(flatten(fst)));
+		System.out.println("  After flaten2: " + LinkedList.toStringSimple(flatten(LinkedList.small2DList2())));
+	}
 	
 	// http://blog.gainlo.co/index.php/2016/07/06/lowest-common-ancestor/
 	// FB - Lowest Common Ancestor
@@ -202,33 +329,101 @@ public class Gainlo
 		*/
 	}
 	
-	// http://blog.gainlo.co/index.php/2017/02/02/uber-interview-questions-longest-increasing-subarray/
-	// Uber - Given an array, return the length of the longest increasing subarray.
-	// also - return longest increasing subsequence...
-	public static int[] lisubArray(int[] arr)
+	// http://blog.gainlo.co/index.php/2016/08/14/uber-interview-question-map-implementation/
+	// Uber - Map Implementation
+	
+	// http://blog.gainlo.co/index.php/2016/09/30/uber-interview-question-delimiter-matching/
+	// Uber - Delimiter Matching
+	
+	// http://blog.gainlo.co/index.php/2016/11/11/uber-interview-question-weighted-random-numbers/
+	// Uber - Weighted Random Numbers
+	
+	// http://blog.gainlo.co/index.php/2016/11/18/uber-interview-question-move-zeroes/
+	// Uber - Move zeroes in array to end
+	public static void moveZeros(int[] arr)
 	{
-		int start = 0, end = 0, maxStart = 0, maxEnd = 0;
-		for(int i = 1; i < arr.length; i++) {
-			if(arr[i] <= arr[i-1]) {
-				if(maxEnd - maxStart < end - start) {
-					maxStart = start;
-					maxEnd = end;
-				}
-				start = i;
+		int left = 0, right = arr.length - 1;
+		while(left < right) {
+			while(left < right && arr[left] != 0) left++;
+			while(left < right && arr[right] == 0) right--;
+			if(left < right) {
+				arr[left] = arr[right];
+				arr[right] = 0;
 			}
-			end = i;
 		}
-		int[] res = new int[1 + Math.max(maxEnd - maxStart, end - start)];
-		if(maxEnd - maxStart > end - start) {
-			for(int i = maxStart; i <= maxEnd; i++)
-				res[i-maxStart] = arr[i];
+	}
+	public static void moveZeros2(int[] arr)
+	{
+		int nPos = 0;
+		for(int i = 0; i < arr.length; i++) {
+			if(arr[i] != 0) {
+				if(nPos != i) {
+					arr[nPos] = arr[i];
+					arr[i] = 0;
+				}
+				nPos++;
+			}
 		}
-		else {
-			for(int i = start; i <= end; i++)
-				res[i-start] = arr[i];
+	}
+	
+	// http://blog.gainlo.co/index.php/2016/12/02/uber-interview-question-maximum-sum-non-adjacent-elements/
+	// Uber - Maximum sum of non-adjacent elements
+	// Already solved in DynProg2.java/maxsumNo2Adj
+	
+	// http://blog.gainlo.co/index.php/2016/12/23/uber-interview-questions-permutations-parentheses/
+	// Uber - Permutations of Parantheses
+	public static ArrayList<String> parens(int n)
+	{
+		ArrayList<String> res = new ArrayList<>();
+		if(n > 0) {
+			parens(2*n, n, n, res, new char[2*n]);
 		}
 		return res;
 	}
+	private static void parens(int num, int left, int right, ArrayList<String> res, char[] cs)
+	{
+		if(left == 0 && right == 0) {
+			res.add(new String(cs));
+			return;
+		}
+		int pos = num - left - right;
+		if(left > 0) {
+			cs[pos] = '(';
+			parens(num, left-1, right, res, cs);
+		}
+		if(right > left) {
+			cs[pos] = ')';
+			parens(num, left, right-1, res, cs);
+		}
+	}
+
+	public static ArrayList<String> parens2(int n)
+	{
+		ArrayList<String> res = new ArrayList<>();
+		if(n > 0) {
+			parens2(n, 0, res, "");
+		}
+		return res;
+	}
+	private static void parens2(int left, int right, ArrayList<String> res, String prefix)
+	{
+		if(left == 0 && right == 0) {
+			res.add(prefix);
+		}
+		if(left > 0) {
+			parens2(left-1, right+1, res, prefix + "(");
+		}
+		if(right > 0) {
+			parens2(left, right-1, res, prefix + ")");
+		}
+	}
+	
+	// http://blog.gainlo.co/index.php/2017/01/05/uber-interview-questions-permutations-array-arrays/
+	// Uber - Permutations of an array of arrays
+	
+	// http://blog.gainlo.co/index.php/2017/01/12/rotated-array-binary-search/
+	// Uber – Search in sorted and rotated array
+	// Already solved in CTCICh10SortSearch.java
 
 	// http://blog.gainlo.co/index.php/2017/01/20/arrange-given-numbers-to-form-the-biggest-number-possible/
 	// Uber - Arrange Given Numbers To Form The Biggest Number Possible
@@ -331,185 +526,33 @@ public class Gainlo
 		return neg?-val:val;
 	}
 
-	// http://blog.gainlo.co/index.php/2016/04/08/if-a-string-contains-an-anagram-of-another-string/
-	// If a String contains an anagram of another String
-	
-
-	// http://blog.gainlo.co/index.php/2017/01/12/rotated-array-binary-search/
-	// Uber – Search in sorted and rotated array
-	// Already solved in CTCICh10SortSearch.java
-
-	// http://blog.gainlo.co/index.php/2017/01/05/uber-interview-questions-permutations-array-arrays/
-	// Uber - Permutations of an array of arrays
-	
-	// http://blog.gainlo.co/index.php/2016/12/23/uber-interview-questions-permutations-parentheses/
-	// Uber - Permutations of Parantheses
-	public static ArrayList<String> parens(int n)
+	// http://blog.gainlo.co/index.php/2017/02/02/uber-interview-questions-longest-increasing-subarray/
+	// Uber - Given an array, return the length of the longest increasing subarray.
+	// also - return longest increasing subsequence...
+	public static int[] lisubArray(int[] arr)
 	{
-		ArrayList<String> res = new ArrayList<>();
-		if(n > 0) {
-			parens(2*n, n, n, res, new char[2*n]);
-		}
-		return res;
-	}
-	private static void parens(int num, int left, int right, ArrayList<String> res, char[] cs)
-	{
-		if(left == 0 && right == 0) {
-			res.add(new String(cs));
-			return;
-		}
-		int pos = num - left - right;
-		if(left > 0) {
-			cs[pos] = '(';
-			parens(num, left-1, right, res, cs);
-		}
-		if(right > left) {
-			cs[pos] = ')';
-			parens(num, left, right-1, res, cs);
-		}
-	}
-
-	public static ArrayList<String> parens2(int n)
-	{
-		ArrayList<String> res = new ArrayList<>();
-		if(n > 0) {
-			parens2(n, 0, res, "");
-		}
-		return res;
-	}
-	private static void parens2(int left, int right, ArrayList<String> res, String prefix)
-	{
-		if(left == 0 && right == 0) {
-			res.add(prefix);
-		}
-		if(left > 0) {
-			parens2(left-1, right+1, res, prefix + "(");
-		}
-		if(right > 0) {
-			parens2(left, right-1, res, prefix + ")");
-		}
-	}
-	
-	// http://blog.gainlo.co/index.php/2016/12/02/uber-interview-question-maximum-sum-non-adjacent-elements/
-	// Uber - Maximum sum of non-adjacent elements
-	// Already solved in DynProg2.java/maxsumNo2Adj
-	
-	// http://blog.gainlo.co/index.php/2016/11/18/uber-interview-question-move-zeroes/
-	// Uber - Move zeroes in array to end
-	public static void moveZeros(int[] arr)
-	{
-		int left = 0, right = arr.length - 1;
-		while(left < right) {
-			while(left < right && arr[left] != 0) left++;
-			while(left < right && arr[right] == 0) right--;
-			if(left < right) {
-				arr[left] = arr[right];
-				arr[right] = 0;
-			}
-		}
-	}
-	public static void moveZeros2(int[] arr)
-	{
-		int nPos = 0;
-		for(int i = 0; i < arr.length; i++) {
-			if(arr[i] != 0) {
-				if(nPos != i) {
-					arr[nPos] = arr[i];
-					arr[i] = 0;
+		int start = 0, end = 0, maxStart = 0, maxEnd = 0;
+		for(int i = 1; i < arr.length; i++) {
+			if(arr[i] <= arr[i-1]) {
+				if(maxEnd - maxStart < end - start) {
+					maxStart = start;
+					maxEnd = end;
 				}
-				nPos++;
+				start = i;
 			}
+			end = i;
 		}
+		int[] res = new int[1 + Math.max(maxEnd - maxStart, end - start)];
+		if(maxEnd - maxStart > end - start) {
+			for(int i = maxStart; i <= maxEnd; i++)
+				res[i-maxStart] = arr[i];
+		}
+		else {
+			for(int i = start; i <= end; i++)
+				res[i-start] = arr[i];
+		}
+		return res;
 	}
-	
-	// http://blog.gainlo.co/index.php/2016/11/11/uber-interview-question-weighted-random-numbers/
-	// Uber - Weighted Random Numbers
-	
-	// http://blog.gainlo.co/index.php/2016/09/30/uber-interview-question-delimiter-matching/
-	// Uber - Delimiter Matching
-	
-	// http://blog.gainlo.co/index.php/2016/08/14/uber-interview-question-map-implementation/
-	// Uber - Map Implementation
-	
-	// http://blog.gainlo.co/index.php/2016/06/03/second-largest-element-of-a-binary-search-tree/
-	// FB - Second Largest Element of a Binary Search Tree
-	// Coded a reverse inorder tranversal - get items in descending order choose 2nd.
-	
-	// http://blog.gainlo.co/index.php/2016/06/01/subarray-with-given-sum/
-	// FB - Subarray with Given Sum
-	// Given an array of non-negative numbers, find continuous subarray with sum to S.
-	public static int[] subArraySum(int arr[], int val)
-	{
-		if(arr == null || val < 0 || arr.length == 0) return new int[] {};
-
-		int left = 0, right = 0, len = arr.length, sum = arr[0];
-		while(left <= right && right < len) {
-			if(sum == val) {
-				return new int[] {left, right};
-			}
-			if(sum < val) {
-				right++;
-				if(right < len) sum += arr[right];
-			}
-			else {
-				if(left < len) sum -= arr[left];
-				left++;
-			}
-		}
-		return new int[] {};
-	}
-	// Follow-up, Given an array of numbers, find subarray with sum to S. DP problem there already
-	
-	// http://blog.gainlo.co/index.php/2016/05/10/duplicate-elements-of-an-array/
-	// FB - Duplicate Elements of an Array
-	// Simple descriptive problem about external merge sort and pivot... (like qsort)
-	
-	// http://blog.gainlo.co/index.php/2016/05/06/group-anagrams/
-	// FB - Group Anagrams
-	public static Comparator<String> StringComparator = new Comparator<String>()
-	{
-		public int compare(String s1, String s2)
-		{
-			return sortString(s1).compareTo(sortString(s2));
-		}
-	};
-	private static String sortString(String s)
-	{
-		char[] cs = s.toCharArray();
-		Arrays.sort(cs);
-		return new String(cs);
-	}
-	public static String groupAnagrams(String[] strs)
-	{
-		HashMap<String, ArrayList<String>> strMap = new HashMap<>();
-		for(String str : strs) {
-			String s = sortString(str);
-			if(!strMap.containsKey(s)) {
-				strMap.put(s, new ArrayList<String>());
-			}
-			strMap.get(s).add(str);
-		}
-		
-		StringBuilder sb = new StringBuilder();
-		for(Map.Entry<String, ArrayList<String>> entry : strMap.entrySet()) {
-			sb.append(entry.getValue().toString());
-		}
-		return sb.toString();
-	}
-	
-	// http://blog.gainlo.co/index.php/2016/04/29/minimum-number-of-deletions-of-a-string/
-	// FB - Minimum Number of Deletions of a String
-	// Since it is just deletions we know the String has to be "in order"
-	// Make all possible combinations of string (2^N for string of length N), check starting from the longest
-	// if any of them is present in the dictionary.
-		
-	// http://blog.gainlo.co/index.php/2016/04/26/deepest-node-in-a-tree/
-	// Uber - Deepest Node in a tree/
-	// Last node in a level order search
-
-	// http://blog.gainlo.co/index.php/2016/04/15/print-all-paths-of-a-binary-tree/
-	// FB - Print all Paths of a Binary Tree
-	// Done in paper Verified in interviewbit.
 
 	private static void testlisubArray()
 	{
@@ -542,9 +585,6 @@ public class Gainlo
 		}
 	}
 	
-	// http://blog.gainlo.co/index.php/2016/04/12/find-the-longest-substring-with-k-unique-characters/
-	// FB - Find the longest Substring with k unique characters
-
 	private static void testbiggest()
 	{
 		System.out.println("biggest of 423865 is " + biggest(423865));
@@ -782,7 +822,7 @@ public class Gainlo
 	public static void main(String[] args)
 	{
 		testqueue();
-
+		testflatten();
 		System.out.println("abab" + " " + shortestPal("abab"));
 		System.out.println("axbab" + " " + shortestPal("axbab"));
 		testlisubArray();

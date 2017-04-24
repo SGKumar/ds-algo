@@ -1,9 +1,9 @@
-package bits;
+package ctci;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class BitMath
+public class Ch5BitManipulation
 {
 	// BEGIN Cracking the Coding Interview Ch. 05
 	private static int insertBinaryNum(int n, int m, int i, int j)
@@ -77,18 +77,26 @@ public class BitMath
 	}
 
 	private static boolean isPowerOf2(int n)
-	{
+	{ // 5.5
 		return ((n & (n-1)) == 0);
 	}
-
-	private static int flipBitsToConvert(int m, int n)
+	private static void testisPowerOf2(int val)
 	{
+		System.out.println(val + " is " + (isPowerOf2(val)?"":"NOT ") + "a power of 2");
+	}
+
+	public static int flipBitsToConvert(int m, int n)
+	{ // 5.6
 		int val = m ^ n;
 		int bitsToFlip = 0;
-		for(int i = val; i > 0; i = (i & (i-1))) {
+		for(int i = val; i > 0; i &= (i-1)) {
 			bitsToFlip++;
 		}
 		return bitsToFlip;
+	}
+	private static void testflipBitsToConvert(int m, int n)
+	{
+		System.out.println("" + flipBitsToConvert(m, n) + " bits to flip to convert from " + m + " to " + n);
 	}
 
 	private static int pairwiseBitSwap(int n)
@@ -132,107 +140,6 @@ public class BitMath
 	}
 	// END Cracking the Coding Interview Ch. 05
 	
-	private static int nextPowerOf2(int in)
-	{
-		// in > 0
-		int levels = 1, nodes = in;
-		while((nodes = nodes >>> 1) > 0)
-		{
-			levels++;
-		}
-		//System.out.printf("nextPowerOf2 of %d is :%d %d\n", in, levels, 1<<levels);
-		return levels;
-	}
-
-	// G4G count total set bits in all numbers from 1 to n
-	private static int log2(int n) {
-		int b = -1;
-		while(n > 0) {
-			n >>>= 1;
-			b++;
-		}
-		return b;
-	}
-	public static int onBitsRec(int n) {
-		if(n < 3) return n;
-		int k = log2(n);
-		if(isPowerOf2(n)) {
-			return 1 + k*(1 <<(k-1));
-		}
-		if(isPowerOf2(n+1)) {
-			return (k+1)*(1 << k);
-		}
-		int tillPowerOf2 = 1 + k*(1 <<(k-1));
-		int leftMostBits = n - (1 <<k);
-		int sum = tillPowerOf2 + leftMostBits;
-		return sum + onBitsRec(leftMostBits);
-	}
-	public static int onBitsIter(int n) {
-		int sum = 0;
-		while(n >= 3) {
-			int k = log2(n);
-			if(isPowerOf2(n)) {
-				sum += 1 + k*(1 <<(k-1));
-				return sum;
-			}
-			else if(isPowerOf2(n+1)) {
-				sum += (k+1)*(1 <<k);
-				return sum;
-			}
-			else {
-				sum += 1 + k*(1 <<(k-1)) + n -(1 <<k);
-			}
-			n -= (1 <<k);
-		}
-		sum += n;
-		return sum;
-	}
-	public static int onBits(int n) {
-		int sum = 0;
-		while(n >= 3) {
-			int k = log2(n);
-			sum += 1 + k*(1 <<(k-1));
-			int remBits = n -(1 <<k);
-			sum += remBits;
-			n -= remBits;
-		}
-		sum += n;
-		return sum;
-	}
-	private static void testnextPower()
-	{
-		System.out.println("### Move test nextPowerOf2");
-		nextPowerOf2(13);
-		nextPowerOf2(14);
-		nextPowerOf2(15);
-		nextPowerOf2(16);
-		System.out.println("Next power_of_2 of 7 is " + nextPowerOf2(7));
-		System.out.println("Next power_of_2 of 93 is " + nextPowerOf2(93));
-		System.out.println("Next power_of_2 of 7 is " + nextPowerOf2(7));
-		System.out.println("Next power_of_2 of 93 is " + nextPowerOf2(93));
-	}
-
-	// low level bit hacks BEGIN ->
-	// http://www.catonmat.net/blog/low-level-bit-hacks-you-absolutely-must-know/
-	private static String bits(int val) { return Integer.toBinaryString(val); }
-	public static int isolateRightMostBit(int val) {
-		return val & -val;
-	}
-	public static int offRightMost1Bit(int val) {
-		return val & (val-1);
-	}
-	public static int propRightMostBit(int val) {
-		return val | (val-1);
-	}
-	public static int isolateRightMost0(int val) {
-		return (val + 1) & ~val;
-	}
-	public static int onRightMost0Bit(int val) {
-		return val | (val+1);
-	}
-
-	// low level bit hacks END ->
-	
 	private static void testPalindrome(int val)
 	{
 		int i = 0, valp = 0;
@@ -266,25 +173,10 @@ public class BitMath
 		System.out.println("Next smaller of " + Integer.toBinaryString(val) + " w same no. of 1s " +
 			Integer.toBinaryString(nextSmallerWithSameNumof1Bits(val)));
 	}
-	private static void testisPowerOf2(int val)
-	{
-		System.out.println(val + " is " + (isPowerOf2(val)?"":"NOT ") + "a power of 2");
-	}
-	private static void testflipBitsToConvert(int m, int n)
-	{
-		System.out.println("" + flipBitsToConvert(m, n) + " bits to flip to convert from " + m + " to " + n);
-	}
 	private static void testpairwiseBitSwap(int n)
 	{
 		System.out.println("B4 Swap: " + Integer.toBinaryString(n) + "\n" +
 			"A4 Swap: " + Integer.toBinaryString(pairwiseBitSwap(n)));
-	}
-	private static void testonBits()
-	{
-		for(int i = 1; i < 65; i++) {
-		//for(int i = 1; i < 264; i+=5) {
-			System.out.println("onBits:\t" + i + "\t" + onBitsRec(i) + "\t" + onBitsIter(i) /*+ "\t" + onBits(i)*/);
-		}
 	}
 
 	public static void main(String args[])
@@ -307,8 +199,6 @@ public class BitMath
 		testnextSmallerWithSameNumof1Bits(8);
 		testnextSmallerWithSameNumof1Bits(57);
 
-		testnextPower();
-		
 		testisPowerOf2(-1);
 		testisPowerOf2(1);
 		testisPowerOf2(64);
@@ -325,31 +215,7 @@ public class BitMath
 		testdoubleToBinaryString(0.125);
 		testdoubleToBinaryString(0.72);
 
-		testonBits();
-
 		System.out.println("No of bytes in int & long " + Integer.SIZE/8 + " " + Long.SIZE/8);
 		System.out.println("fraction % 2.55%10 = " + (int)2.55%10);
-		
-		//System.out.println("-x == ~x+1 28 " + (-28 == ~28+1));
-		System.out.println("isol right most 1 bit 28: " + bits(28) + " " + bits(isolateRightMostBit(28)));
-		System.out.println("isol right most 0 bit 28: " + bits(28) + " " + bits(isolateRightMost0(28)));
-		System.out.println("off  right most 1 bit 28: " + bits(28) + " " + bits(offRightMost1Bit(28)));
-		System.out.println("on   right most 0 bit 28: " + bits(28) + " " + bits(onRightMost0Bit(28)));
-		System.out.println("prop right most 1 bit 28: " + bits(28) + " " + bits(propRightMostBit(28)));
-
-		System.out.println("isol right most 1 bit 29: " + bits(29) + " " + bits(isolateRightMostBit(29)));
-		System.out.println("isol right most 0 bit 29: " + bits(29) + " " + bits(isolateRightMost0(29)));
-		System.out.println("off  right most 1 bit 29: " + bits(29) + " " + bits(offRightMost1Bit(29)));
-		System.out.println("on   right most 0 bit 29: " + bits(29) + " " + bits(onRightMost0Bit(29)));
-		System.out.println("prop right most 1 bit 29: " + bits(29) + " " + bits(propRightMostBit(29)));
-
-		System.out.println("isol right most 1 bit 26: " + bits(26) + " " + bits(isolateRightMostBit(26)));
-		System.out.println("isol right most 0 bit 26: " + bits(26) + " " + bits(isolateRightMost0(26)));
-		System.out.println("off  right most 1 bit 26: " + bits(26) + " " + bits(offRightMost1Bit(26)));
-		System.out.println("on   right most 0 bit 26: " + bits(26) + " " + bits(onRightMost0Bit(26)));
-		System.out.println("prop right most 1 bit 26: " + bits(26) + " " + bits(propRightMostBit(26)));
-		
-		System.out.println("left-most bit of 32 : " + log2(32));
-		
 	}
 }

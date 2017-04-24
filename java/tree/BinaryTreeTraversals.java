@@ -487,18 +487,6 @@ public class BinaryTreeTraversals
 	}
 	*/
 	
-	protected static int nextPowerOf2(int in)
-	{
-		// in > 0
-		int levels = 1, nodes = in;
-		while((nodes = nodes >>> 1) > 0)
-		{
-			levels++;
-		}
-		//System.out.printf("nextPowerOf2 of %d is :%d %d\n", in, levels, 1<<levels);
-		return levels;
-	}
-
 	// fill nextSibling pointer when available, all NULL initially.
 	public static String setNextRec(BinaryNode node) {
 		if(node == null) return "";
@@ -641,20 +629,6 @@ public class BinaryTreeTraversals
         System.out.println("nextIter best: " + nextIter(tn));
     }
 	
-	private static void testnextPower(BinaryTree t)
-	{
-		System.out.println("### Move test nextPowerOf2");
-		/*
-		nextPowerOf2(13);
-		nextPowerOf2(14);
-		nextPowerOf2(15);
-		nextPowerOf2(16);
-		System.out.println("Next power_of_2 of 7 is " + nextPowerOf2(7));
-		System.out.println("Next power_of_2 of 93 is " + nextPowerOf2(93));
-		System.out.println("Next power_of_2 of 7 is " + nextPowerOf2(7));
-		System.out.println("Next power_of_2 of 93 is " + nextPowerOf2(93));
-		*/
-	}
 	private static void btHardQues(BinaryNode t)
 	{
 		// inorder successor

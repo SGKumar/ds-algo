@@ -36,6 +36,15 @@ public class BinaryTree extends BinaryTreeBase
 		public int dia() { return diameter; }
 	}
 
+	protected static char min(BinaryNode root) {
+		if(root.left() == null && root.right() == null) return root.value();
+		char l = 128, r = 128;
+		if(root.left() != null) 
+			l = min(root.left());
+		if(root.right() != null) 
+			r = min(root.right());
+		return (l < r)?l:r;
+	}
 	public static String ancestors(BinaryNode node, char ch)
 	{
 		StringBuilder str = new StringBuilder();
@@ -381,7 +390,9 @@ public class BinaryTree extends BinaryTreeBase
 		if(t.left == null && t.right == null) {
 			String p = path + t.val;
 			if(k < p.length()) {
-				res.add(p.charAt(p.length()-k-1));
+				char ch = p.charAt(p.length()-k-1);
+				if(!res.contains(ch))
+					res.add(ch);
 			}
 		}
 		if(t.left != null) {
